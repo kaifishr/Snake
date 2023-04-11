@@ -7,6 +7,12 @@ $$
 &\begin{array}{c|c|c}
 \circ & \circ & \times \\
 \hline
+\circ & \circ & \times \\
+\hline
+\circ & \circ & \times \\
+\hline
+\circ & \circ & \times \\
+\hline
 \circ & \times &  \circ \\
 \hline
 \times & \circ & \times \\
