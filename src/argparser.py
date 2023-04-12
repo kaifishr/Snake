@@ -28,6 +28,8 @@ def argument_parser() -> argparse.ArgumentParser:
         type=str,
     )
 
+    parser.add_argument("-na", "--num-agents", dest="num_agents", default=1, type=int)
+
     ###########
     # Trainer #
     ###########
@@ -72,7 +74,15 @@ def argument_parser() -> argparse.ArgumentParser:
     # Environment #
     ###############
 
-    parser.add_argument("-fs", "--field-size", dest="field_size", default=3, type=int)
+    parser.add_argument("-fs", "--field-size", dest="field_size", default=16, type=int)
+    parser.add_argument(
+            "-pm", 
+            "--play-mode", 
+            dest="play_mode", 
+            default="solo", 
+            choices=["solo", "agent"], 
+            type=str
+    )
 
     #############################
     # Model / policy parameters #

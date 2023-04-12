@@ -28,7 +28,6 @@ def save_checkpoint(model: torch.nn.Module, model_name: str, args) -> None:
     checkpoint_name = f"{f'{model_name}_{args.algorithm}' if model_name else 'model'}"
     checkpoint_path = "weights"
     model_path = pathlib.Path(checkpoint_path) / f"{checkpoint_name}.pth"
-
     torch.save(obj=model.state_dict(), f=model_path)
 
 
@@ -58,11 +57,11 @@ def print_args(args) -> None:
     Args:
         args: Parsed arguments.
     """
-    print("Configuration:\n")
+    print("\nSnakes configuration:\n")
     representation = "{k:.<32}{v}"
     for key, value in vars(args).items():
         print(representation.format(k=key, v=value))
-    print()
+    print("\n")
 
 
 def eval(function: callable) -> callable:
@@ -78,7 +77,6 @@ def eval(function: callable) -> callable:
     Returns:
         Decorated function.
     """
-
     @functools.wraps(function)
     def eval_wrapper(self, *args, **kwargs):
         self.eval()

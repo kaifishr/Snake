@@ -11,6 +11,7 @@ Typical usage:
 """
 import copy
 
+import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 
@@ -30,19 +31,23 @@ class Snakes(Environment):
 
     A simple environment for the game Snakes.
 
-    |`````````````|
-    |x oooo       |
-    |     o       |
-    |     oooooo  |
-    |.............|
+    |``````````````````|
+    |x -ooo            |
+    |     O  oooo      |
+    |     oooo  O      |
+    |           O      |
+    |    oooooooo      |
+    |                  |
+    |..................|
 
     # Action space
 
-    The action is an integer which can take values [0, 4] indicating
+    The action is an integer which can take values [0, 3] indicating
     the direction of the next move:
 
-    1|2|3
-    0|o|4
+    .|1|.
+    2|x|0
+    .|3|.
 
     # Observation space
 
@@ -72,15 +77,21 @@ class Snakes(Environment):
 
     Attributes:
         size: Size of playing field.
+        num_agents: Number of competing agents.
         field: PyTorch tensor representing playing field.
     """
 
-    def __init__(self, size: int, num_agents: int) -> None:
+    def __init__(self, size: int, num_agents: int = 1) -> None:
         """Initializes a square Tic-tac-toe field."""
         super().__init__()
         self.size = size
         self.num_agents = num_agents
         self.field = torch.zeros(size=(size, size), dtype=torch.long)
+        self.pos_agents = set()  # Keep track of snake's position. TODO: Change later to tuple of sets.
+
+    def _init_agents(self) -> None:
+        """Initializes position of agents."""
+        self.pos_agents((8, 8))  # TODO: Add random non-overlapping initial positions.
 
     @torch.no_grad()
     def _has_won(self, player: int) -> bool:
@@ -150,18 +161,14 @@ class Snakes(Environment):
         x, y = divmod(index, self.size)  # index // self.size, index % self.size
         return x, y
 
-    def step(self, action: int, player: int) -> tuple:
-        """Performs a single game move for player.
+    def step(self, action: int, agent_id: int, player: int) -> tuple:
+        """Performs a single game move for agent.
 
         Args:
-            action: The action predicted by the neural network.
-            The action is represented by an integer in the range
-            [0, size**2 - 1].
+            action: The action passed by the user or predicted by the neural network.
 
         Returns:
-            A tuple holding information about state, reward, and
-            if game is finished.
-
+            A tuple holding state (matrix), reward (scalar), and done (bool) indicating if game is finished.
         """
         # x, y = self._index_to_coordinate(action)
         # if self.is_free(x=x, y=y):
@@ -241,7 +248,7 @@ class Snakes(Environment):
         return events_a, events_b
 
     def play(self, model: nn.Module) -> None:
-        """Plays game against an agent."""
+        """Runs game in solo mode or against pretrained agents."""
 
         print("\nGame started.\n")
 
@@ -250,27 +257,24 @@ class Snakes(Environment):
 
         while not done:
 
-            print("Machine")
-            action = model.predict(state)
-            state, reward, done = self.step(action=action, player=-1)
-
-            print(self)
-
-            if self.debug:
-                print(f"{state = }")
-                print(f"{reward = }")
-                print(f"{done = }")
-
-            if done:
-                if reward == 1:
-                    print("You lose.")
-                elif reward == -1:
-                    print("Illegal move. Computer lost.")
-                else:
-                    print("Draw.")
+            # print("Machine")
+            # action = model.predict(state)
+            # state, reward, done = self.step(action=action, player=-1)
+            # print(self)
+            # if self.debug:
+            #     print(f"{state = }")
+            #     print(f"{reward = }")
+            #     print(f"{done = }")
+            # if done:
+            #     if reward == 1:
+            #         print("You lose.")
+            #     elif reward == -1:
+            #         print("Illegal move. Computer lost.")
+            #     else:
+            #         print("Draw.")
 
             if not done:
-                action = int(input(f"Enter an index between [0, {self.size**2 - 1}]: "))
+                action = int(input(f"Enter an index between [0, 3]: "))
                 state, reward, done = self.step(action=action, player=1)
 
                 print(self)
@@ -292,6 +296,7 @@ class Snakes(Environment):
         """Resets the playing flied."""
         self.field = torch.zeros(size=(self.size, self.size), dtype=torch.long)
         state = self.field.float()[None, ...]
+        self.pos_agents = set()
         return state
 
     def __repr__(self) -> str:
