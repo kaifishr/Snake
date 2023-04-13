@@ -10,6 +10,7 @@ Typical usage:
 
 """
 import copy
+import collections
 
 import matplotlib.pyplot as plt
 import torch
@@ -23,7 +24,7 @@ class Environment:
 
     def __init__(self) -> None:
         """Initializes Environment."""
-        self.debug = False
+        self.debug = True
 
 
 class Snakes(Environment):
@@ -32,12 +33,13 @@ class Snakes(Environment):
     A simple environment for the game Snakes.
 
     |``````````````````|
-    |x -ooo            |
-    |     O  oooo      |
-    |     oooo  O      |
+    | >-ooooooooooo    |
+    |             O    |
+    |  X   oooooooo    |
+    |      O           |
+    |      oooooo      |
     |           O      |
-    |    oooooooo      |
-    |                  |
+    |        oooo      |
     |..................|
 
     # Action space
@@ -87,11 +89,24 @@ class Snakes(Environment):
         self.size = size
         self.num_agents = num_agents
         self.field = torch.zeros(size=(size, size), dtype=torch.long)
-        self.pos_agents = set()  # Keep track of snake's position. TODO: Change later to tuple of sets.
+
+        # Keep track of snake's position. TODO: Change later to tuple of sets and deques.
+        self.pos_s = None
+        self.pos_q = None
 
     def _init_agents(self) -> None:
-        """Initializes position of agents."""
-        self.pos_agents((8, 8))  # TODO: Add random non-overlapping initial positions.
+        """Initializes position of agents.
+    
+        TODO: Add random non-overlapping initial positions.
+        """
+        pos_init = (8, 8)
+        self.pos_s.add(pos_init)
+        self.pos_q.append(pos_init)
+        x, y = pos_init
+        self.field[y, x] = 1
+        food_pos_init = (2, 2)
+        x, y = food_pos_init
+        self.field[y, x] = -1
 
     @torch.no_grad()
     def _has_won(self, player: int) -> bool:
@@ -152,6 +167,8 @@ class Snakes(Environment):
     def _index_to_coordinate(self, index: int) -> tuple[int, int]:
         """Converts a flat index into a coordinate tuple.
 
+        'x, y = divmod(a, b)' is equivalent to 'x, y = a // b, a % b'
+
         Args:
             index: The index to be converted to a coordinate.
 
@@ -161,15 +178,25 @@ class Snakes(Environment):
         x, y = divmod(index, self.size)  # index // self.size, index % self.size
         return x, y
 
-    def step(self, action: int, agent_id: int, player: int) -> tuple:
+    def step(self, action: int, agent_id: int, player: int = 0) -> tuple:
         """Performs a single game move for agent.
 
+        A step consists of moving the snakes head to the new position
+        if possible, shorten the snake's tail by unit, and adding new
+        food in case no food is left.
+
         Args:
-            action: The action passed by the user or predicted by the neural network.
+            action: The action passed by the user or predicted by the 
+            neural network.
 
         Returns:
-            A tuple holding state (matrix), reward (scalar), and done (bool) indicating if game is finished.
+            A tuple holding state (matrix), reward (scalar), 
+            and done (bool) indicating if game is finished.
         """
+        # Get head coordinates
+        x, y = self.pos_q[0]
+        print(f"{x = }, {y = }")
+        exit()
         # x, y = self._index_to_coordinate(action)
         # if self.is_free(x=x, y=y):
         #     self.mark_field(x=x, y=y, player=player)
@@ -247,7 +274,7 @@ class Snakes(Environment):
 
         return events_a, events_b
 
-    def play(self, model: nn.Module) -> None:
+    def play(self, model: nn.Module = None) -> None:
         """Runs game in solo mode or against pretrained agents."""
 
         print("\nGame started.\n")
@@ -274,8 +301,9 @@ class Snakes(Environment):
             #         print("Draw.")
 
             if not done:
+                print(self)
                 action = int(input(f"Enter an index between [0, 3]: "))
-                state, reward, done = self.step(action=action, player=1)
+                state, reward, done = self.step(action=action, agent_id=1)
 
                 print(self)
 
@@ -296,13 +324,14 @@ class Snakes(Environment):
         """Resets the playing flied."""
         self.field = torch.zeros(size=(self.size, self.size), dtype=torch.long)
         state = self.field.float()[None, ...]
-        self.pos_agents = set()
+        self.pos_s = set()  
+        self.pos_q = collections.deque()
+        self._init_agents()
         return state
 
     def __repr__(self) -> str:
         """Prints playing field."""
-        # prototype = "{:3}" * self.size
-        # representation = "\n".join(prototype.format(*row) for row in self.field.tolist())
-        # representation = representation.replace("-1", " x").replace("1", "o").replace("0", ".")
-        # return "\n" + representation + "\n"
-        raise NotImplementedError()
+        prototype = "{:3}" * self.size
+        representation = "\n".join(prototype.format(*row) for row in self.field.tolist())
+        representation = representation.replace("-1", " x").replace("1", "o").replace("0", ".")
+        return "\n" + representation + "\n"
