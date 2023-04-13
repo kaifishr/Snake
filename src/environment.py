@@ -91,7 +91,7 @@ class Snakes(Environment):
         self.field = torch.zeros(size=(size, size), dtype=torch.long)
 
         # Keep track of snake's position. TODO: Change later to tuple of sets and deques.
-        self.pos_s = None
+        self.pos_s = None  # TODO: One set should be enough for all agents.
         self.pos_q = None
 
     def _init_agents(self) -> None:
@@ -99,12 +99,12 @@ class Snakes(Environment):
     
         TODO: Add random non-overlapping initial positions.
         """
-        pos_init = (8, 8)
+        pos_init = (8, 8)  # TODO
         self.pos_s.add(pos_init)
         self.pos_q.append(pos_init)
         x, y = pos_init
         self.field[y, x] = 1
-        food_pos_init = (2, 2)
+        food_pos_init = (2, 2)  # TODO
         x, y = food_pos_init
         self.field[y, x] = -1
 
@@ -178,6 +178,11 @@ class Snakes(Environment):
         x, y = divmod(index, self.size)  # index // self.size, index % self.size
         return x, y
 
+    def _step(self, action):
+        """Performs single step for one snake."""
+        action_to_step = {0: (1, 0), 1: (0, 1), 2: (-1, 0), 3: (0, -1)}
+        return action_to_step[action]
+
     def step(self, action: int, agent_id: int, player: int = 0) -> tuple:
         """Performs a single game move for agent.
 
@@ -193,10 +198,35 @@ class Snakes(Environment):
             A tuple holding state (matrix), reward (scalar), 
             and done (bool) indicating if game is finished.
         """
-        # Get head coordinates
+        # Get head coordinates.
         x, y = self.pos_q[0]
+        x_old, y_old = x, y
+
+        # Compute new head coordinates.
+        dx, dy = self._step(action)
         print(f"{x = }, {y = }")
-        exit()
+        print(f"{dx = }, {dy = }")
+        x += dx
+        y += dy
+
+        # Check for collisions.
+        # TODO
+
+        # Check if there is food at the new coordinates.
+        # TODO
+
+        # Step snake in case of no collision.
+        self.pos_q.pop()
+        self.pos_q.append((x, y))
+        self.field[y_old, x_old] = 0
+        self.field[y, x] = 1
+
+        state = self.field.float()[None, ...]
+        reward = 0  # TODO
+        done = False  # TODO
+
+        return state, reward, done
+
         # x, y = self._index_to_coordinate(action)
         # if self.is_free(x=x, y=y):
         #     self.mark_field(x=x, y=y, player=player)
@@ -216,7 +246,6 @@ class Snakes(Environment):
         # state = self.field.float()[None, ...]
         # done = is_finished
         # return state, reward, done
-        raise NotImplementedError()
 
     def run_episode(self, agent_a: Agent, agent_b: Agent) -> tuple:
         """Let agents play one episode of the game.
