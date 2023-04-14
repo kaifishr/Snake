@@ -74,7 +74,7 @@ def argument_parser() -> argparse.ArgumentParser:
     # Environment #
     ###############
 
-    parser.add_argument("-fs", "--field-size", dest="field_size", default=5, type=int)
+    parser.add_argument("-fs", "--field-size", dest="field_size", default=3, type=int)
     parser.add_argument(
             "-pm", 
             "--play-mode", 

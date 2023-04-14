@@ -9,8 +9,9 @@ Typical usage:
     env.play()
 
 """
-import copy
 import collections
+import copy
+import random
 
 import matplotlib.pyplot as plt
 import torch
@@ -93,6 +94,7 @@ class Snakes(Environment):
         # Keep track of snake's position. TODO: Change later to tuple of sets and deques.
         self.pos_s = None  # TODO: One set should be enough for all agents.
         self.pos_q = None
+        self.coord = None  # Holds coordiante tuples of playing field.
 
         # Lookup table to map actions to moves.
         self.action_to_move = {0: (1, 0), 1: (0, -1), 2: (-1, 0), 3: (0, 1)}
@@ -107,9 +109,16 @@ class Snakes(Environment):
         self.pos_q.append(pos_init)
         x, y = pos_init
         self.field[y, x] = 1  # Snake
+
         food_pos_init = (0, 0)  # TODO
         x, y = food_pos_init
         self.field[y, x] = -1  # Food
+
+        # Create list of all playing field coordinates.
+        # Used later to place food.
+        l = list(range(self.size))
+        self.coord = [(x, y) for x in l for y in l]
+
 
     @torch.no_grad()
     def _has_won(self, player: int) -> bool:
@@ -327,17 +336,38 @@ class Snakes(Environment):
             # if not allow_growth:
             #     self.pos_q.popleft()
             # Update playing field.
-            for x, y in self.pos_q:
-                self.field[y, x] = 1
+            x_head, y_head = self.pos_q[-1]
+            self.field[y_head, x_head] = 1
+
+            # Add new food.
+            print(f"{self.pos_q = }")
+            print(f"{self.coord = }")
+            # pos_snake = set(self.pos_snake)
+            # pos_cells = set(self.pos_cells)
+            pos_q = set(self.pos_q)
+            coord = set(self.coord)
+            empty = coord - pos_q
+            print(f"{empty = }")
+            self.coord = list(empty)
+            if len(self.coord) > 0:
+                idx = random.randrange(len(self.coord))
+                self.coord[idx], self.coord[-1] = self.coord[-1], self.coord[idx]
+                x_food, y_food = self.coord.pop()
+                self.field[y_food, x_food] = -1
+                done = False
+            else:
+                # Playing field completely populated by snake(s).
+                done = True
+
         else:
             # No food found yields no reward.
             reward = 0.0
+            done = False
+
             # Register snake's head.
             self.pos_q.append((x, y))
 
             # Update playing field.
-            # for x, y in self.pos_q:
-            #     self.field[y, x] = 1
             x_head, y_head = self.pos_q[-1]
             self.field[y_head, x_head] = 1
             x_tail, y_tail = self.pos_q[0]
@@ -347,9 +377,6 @@ class Snakes(Environment):
             self.pos_q.popleft()
 
         state = self.field.float()[None, ...]
-        done = False  # TODO
-
-        print(f"{self.pos_q = }")
 
         return state, reward, done
 
