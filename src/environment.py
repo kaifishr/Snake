@@ -94,19 +94,22 @@ class Snakes(Environment):
         self.pos_s = None  # TODO: One set should be enough for all agents.
         self.pos_q = None
 
+        # Lookup table to map actions to moves.
+        self.action_to_move = {0: (1, 0), 1: (0, -1), 2: (-1, 0), 3: (0, 1)}
+
     def _init_agents(self) -> None:
         """Initializes position of agents.
     
         TODO: Add random non-overlapping initial positions.
         """
-        pos_init = (8, 8)  # TODO
+        pos_init = (2, 2)  # TODO
         self.pos_s.add(pos_init)
         self.pos_q.append(pos_init)
         x, y = pos_init
-        self.field[y, x] = 1
-        food_pos_init = (2, 2)  # TODO
+        self.field[y, x] = 1  # Snake
+        food_pos_init = (0, 0)  # TODO
         x, y = food_pos_init
-        self.field[y, x] = -1
+        self.field[y, x] = -1  # Food
 
     @torch.no_grad()
     def _has_won(self, player: int) -> bool:
@@ -177,75 +180,6 @@ class Snakes(Environment):
         """
         x, y = divmod(index, self.size)  # index // self.size, index % self.size
         return x, y
-
-    def _step(self, action):
-        """Performs single step for one snake."""
-        action_to_step = {0: (1, 0), 1: (0, 1), 2: (-1, 0), 3: (0, -1)}
-        return action_to_step[action]
-
-    def step(self, action: int, agent_id: int, player: int = 0) -> tuple:
-        """Performs a single game move for agent.
-
-        A step consists of moving the snakes head to the new position
-        if possible, shorten the snake's tail by unit, and adding new
-        food in case no food is left.
-
-        Args:
-            action: The action passed by the user or predicted by the 
-            neural network.
-
-        Returns:
-            A tuple holding state (matrix), reward (scalar), 
-            and done (bool) indicating if game is finished.
-        """
-        # Get head coordinates.
-        x, y = self.pos_q[0]
-        x_old, y_old = x, y
-
-        # Compute new head coordinates.
-        dx, dy = self._step(action)
-        print(f"{x = }, {y = }")
-        print(f"{dx = }, {dy = }")
-        x += dx
-        y += dy
-
-        # Check for collisions.
-        # TODO
-
-        # Check if there is food at the new coordinates.
-        # TODO
-
-        # Step snake in case of no collision.
-        self.pos_q.pop()
-        self.pos_q.append((x, y))
-        self.field[y_old, x_old] = 0
-        self.field[y, x] = 1
-
-        state = self.field.float()[None, ...]
-        reward = 0  # TODO
-        done = False  # TODO
-
-        return state, reward, done
-
-        # x, y = self._index_to_coordinate(action)
-        # if self.is_free(x=x, y=y):
-        #     self.mark_field(x=x, y=y, player=player)
-        #     is_finished, winner = self.is_finished()
-        #     if is_finished and winner == player:
-        #         # Maximum reward for winning the game.
-        #         reward = 1.0
-        #     elif is_finished and winner == 0:
-        #         # No reward if game is a draw.
-        #         reward = 0.0
-        #     else:
-        #         # No reward for correctly marking a field.
-        #         reward = 0.0
-        # else:  # Negative reward and end of game if occupied field is marked.
-        #     reward = -1.0
-        #     is_finished = True
-        # state = self.field.float()[None, ...]
-        # done = is_finished
-        # return state, reward, done
 
     def run_episode(self, agent_a: Agent, agent_b: Agent) -> tuple:
         """Let agents play one episode of the game.
@@ -337,7 +271,7 @@ class Snakes(Environment):
                 print(self)
 
                 if self.debug:
-                    print(f"{state = }")
+                    # print(f"{state = }")
                     print(f"{reward = }")
                     print(f"{done = }")
 
@@ -348,6 +282,96 @@ class Snakes(Environment):
                         print("Illegal move. Computer won.")
                     else:
                         print("Draw.")
+
+    def step(self, action: int, agent_id: int, player: int = 0) -> tuple:
+        """Performs a single game move for agent.
+
+        A step consists of moving the snakes head to the new position
+        if possible, shorten the snake's tail by unit, and adding new
+        food in case no food is left.
+
+        Args:
+            action: The action passed by the user or predicted by the 
+            neural network.
+
+        Returns:
+            A tuple holding state (matrix), reward (scalar), 
+            and done (bool) indicating if game is finished.
+        """
+        # Get head coordinates.
+        x, y = self.pos_q[-1]
+        x_old, y_old = x, y
+
+        # Compute new head coordinates.
+        dx, dy = self.action_to_move[action]
+        print(f"{x = }, {y = }")
+        print(f"{dx = }, {dy = }")
+        x += dx
+        y += dy
+
+        # Check for collisions.
+        # TODO
+        # if self.field[x, y] is is_body(x, y) or is_outside(x, y):
+        #    reward = -1.0
+        #    done = True
+
+        # Allows to turn growth on / off.
+        allow_growth = True
+
+        # Check if there is food at the new coordinates.
+        if self.field[y, x] == -1:
+            # Reward for food found.
+            reward = 1.0
+            # Snake moves and grows.
+            self.pos_q.append((x, y))
+            # if not allow_growth:
+            #     self.pos_q.popleft()
+            # Update playing field.
+            for x, y in self.pos_q:
+                self.field[y, x] = 1
+        else:
+            # No food found yields no reward.
+            reward = 0.0
+            # Register snake's head.
+            self.pos_q.append((x, y))
+
+            # Update playing field.
+            # for x, y in self.pos_q:
+            #     self.field[y, x] = 1
+            x_head, y_head = self.pos_q[-1]
+            self.field[y_head, x_head] = 1
+            x_tail, y_tail = self.pos_q[0]
+            self.field[y_tail, x_tail] = 0
+
+            # Register snake's tail.
+            self.pos_q.popleft()
+
+        state = self.field.float()[None, ...]
+        done = False  # TODO
+
+        print(f"{self.pos_q = }")
+
+        return state, reward, done
+
+        # x, y = self._index_to_coordinate(action)
+        # if self.is_free(x=x, y=y):
+        #     self.mark_field(x=x, y=y, player=player)
+        #     is_finished, winner = self.is_finished()
+        #     if is_finished and winner == player:
+        #         # Maximum reward for winning the game.
+        #         reward = 1.0
+        #     elif is_finished and winner == 0:
+        #         # No reward if game is a draw.
+        #         reward = 0.0
+        #     else:
+        #         # No reward for correctly marking a field.
+        #         reward = 0.0
+        # else:  # Negative reward and end of game if occupied field is marked.
+        #     reward = -1.0
+        #     is_finished = True
+        # state = self.field.float()[None, ...]
+        # done = is_finished
+        # return state, reward, done
 
     def reset(self) -> torch.Tensor:
         """Resets the playing flied."""
