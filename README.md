@@ -13,8 +13,6 @@ $$
 \hline
 \circ & \circ & \times \\
 \hline
-\circ & \times &  \circ \\
-\hline
 \times & \circ & \times \\
 \end{array}
 \end{aligned}
