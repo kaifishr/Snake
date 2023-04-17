@@ -1,25 +1,20 @@
 # Snakes
 
-A reinforcement learning framework.
+A minimal environment equipped with reinforcement learning algorithms to train agents to compete in [Snakes](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). Due to its simplicity, this repository is potentially useful for educational purposes and can serve as a starting point to solve more complex scenarios.
 
 $$
 \begin{aligned}
-&\begin{array}{c|c|c}
-\circ & \circ & \times \\
+&\begin{array}{|ccccc|}
 \hline
-\circ & \circ & \times \\
+\times & > & \circ & \circ & \circ \\
+. & . & . & . & \circ \\
+. & \circ & \circ & . & \circ \\
+. & \circ & . & . & \circ \\
+. & \circ & \circ & \circ & \circ \\
 \hline
-\circ & \circ & \times \\
-\hline
-\circ & \circ & \times \\
-\hline
-\times & \circ & \times \\
 \end{array}
 \end{aligned}
 $$
-
-A minimal environment equipped with reinforcement learning algorithms to train agents to compete in [Snakes](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). Due to its simplicity, this repository is potentially useful for educational purposes and can serve as a starting point to solve more complex games.
-
 
 ## Installation
 
@@ -57,11 +52,6 @@ python play.py -a deep_q_learning -mn agent_a
 
 
 ## Introduction
-
-Tic-tac-toe is an instance of a perfect information, turn-based, two player [**m,n,k-game**]( https://en.wikipedia.org/wiki/M,n,k-game) and is also called a **k-in-a-row** game on an **m-by-n** board. For Tic-tac-toe, these variables are $m=n=k=3$.
-
-In this implementation, two agents alternate taking turns on an $m \times n$ board until one of them gets $k$ in a row and wins the game. The current implementation supports any positive integer for $m,n,k$ with $m=n=k$.
-
 
 ## Reinforcement Learning
 
@@ -119,21 +109,25 @@ The states that the agent observes are the positions of crosses ($\times = 1$), 
 
 $$
 \begin{aligned}
-&\begin{array}{c|c|c}
--1 & 0 & -1 \\
+&\begin{array}{|ccccc|}
 \hline
-0 & 1 & 0 \\
+0.5 & 1.0 & 1.0 & 1.0 & 1.0 \\
+0.0 & 0.0 & 0.0 & 0.0 & 1.0 \\
+0.0 & 1.0 & 1.0 & 0.0 & 1.0 \\
+0.0 & 1.0 & 0.0 & 0.0 & 1.0 \\
+0.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
 \hline
--1 & 1 & 1 \\
 \end{array}
 \end{aligned} = 
 \begin{aligned}
-&\begin{array}{c|c|c}
-\circ &  & \circ \\
+&\begin{array}{|ccccc|}
 \hline
-& \times &  \\
+\times & > & \circ & \circ & \circ \\
+. & . & . & . & \circ \\
+. & \circ & \circ & . & \circ \\
+. & \circ & . & . & \circ \\
+. & \circ & \circ & \circ & \circ \\
 \hline
-\circ & \times & \times \\
 \end{array}
 \end{aligned}
 $$
