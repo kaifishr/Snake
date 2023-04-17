@@ -108,17 +108,13 @@ This section describes the details of the Snakes environment as well as the acti
 The states that the agent observes are the positions of crosses ($\times = 1$), circles ($\circ = -1$, the opponent), and empty fields ($0$) on the board.
 
 $$
-\begin{aligned}
-&\begin{array}{|ccccc|}
-\hline
-0.5 & 1.0 & 1.0 & 1.0 & 1.0 \\
-0.0 & 0.0 & 0.0 & 0.0 & 1.0 \\
-0.0 & 1.0 & 1.0 & 0.0 & 1.0 \\
-0.0 & 1.0 & 0.0 & 0.0 & 1.0 \\
-0.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
-\hline
-\end{array}
-\end{aligned} = 
+\begin{pmatrix}
+2 & 1 & 1 & 1 & 1 \\
+0 & 0 & 0 & 0 & 1 \\
+0 & 1 & 1 & 0 & 1 \\
+0 & 1 & 0 & 0 & 1 \\
+0 & 1 & 1 & 1 & 1 \\
+\end{pmatrix} = 
 \begin{aligned}
 &\begin{array}{|ccccc|}
 \hline
