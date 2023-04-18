@@ -294,7 +294,7 @@ class Snakes(Environment):
 
     def is_outside(self, x: int, y: int) -> bool:
         """Checks if action leads to collision with wall."""
-        if x < 0 or y < 0:
+        if x == -1 or y == -1:
             return True
         elif x == self.size or y == self.size:
             return True
