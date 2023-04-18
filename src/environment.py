@@ -34,13 +34,13 @@ class Snakes(Environment):
     A simple environment for the game Snakes.
 
     |``````````````````|
-    | >-ooooooooooo    |
-    |             O    |
-    |  X   oooooooo    |
-    |      O           |
-    |      oooooo      |
-    |           O      |
-    |        oooo      |
+    | X  >-ooooooooooo |
+    |                O |
+    |         oooooooo |
+    |         O        |
+    |         oooooo   |
+    |              O   |
+    |           oooo   |
     |..................|
 
     # Action space
@@ -292,6 +292,14 @@ class Snakes(Environment):
                     else:
                         print("Draw.")
 
+    def is_outside(self, x: int, y: int) -> bool:
+        """Checks if action leads to collision with wall."""
+        if x < 0 or y < 0:
+            return True
+        elif x == self.size or y == self.size:
+            return True
+        return False 
+
     def step(self, action: int, agent_id: int, player: int = 0) -> tuple:
         """Performs a single game move for agent.
 
@@ -318,63 +326,67 @@ class Snakes(Environment):
         x += dx
         y += dy
 
+        # Allows to turn growth on / off.
+        allow_growth = True
+
         # Check for collisions.
         # TODO
         # if self.field[x, y] is is_body(x, y) or is_outside(x, y):
         #    reward = -1.0
         #    done = True
-
-        # Allows to turn growth on / off.
-        allow_growth = True
-
-        # Check if there is food at the new coordinates.
-        if self.field[y, x] == -1:
-            # Reward for food found.
-            reward = 1.0
-            # Snake moves and grows.
-            self.pos_q.append((x, y))
-            # if not allow_growth:
-            #     self.pos_q.popleft()
-            # Update playing field.
-            x_head, y_head = self.pos_q[-1]
-            self.field[y_head, x_head] = 1
-
-            # Add new food.
-            print(f"{self.pos_q = }")
-            print(f"{self.coord = }")
-            # pos_snake = set(self.pos_snake)
-            # pos_cells = set(self.pos_cells)
-            pos_q = set(self.pos_q)
-            coord = set(self.coord)
-            empty = coord - pos_q
-            print(f"{empty = }")
-            self.coord = list(empty)
-            if len(self.coord) > 0:
-                idx = random.randrange(len(self.coord))
-                self.coord[idx], self.coord[-1] = self.coord[-1], self.coord[idx]
-                x_food, y_food = self.coord.pop()
-                self.field[y_food, x_food] = -1
-                done = False
-            else:
-                # Playing field completely populated by snake(s).
-                done = True
+        if self.is_outside(x, y):
+            reward = -1.0
+            done = True
 
         else:
-            # No food found yields no reward.
-            reward = 0.0
-            done = False
+            # Check if there is food at the new coordinates.
+            if self.field[y, x] == -1:
+                # Reward for food found.
+                reward = 1.0
+                # Snake moves and grows.
+                self.pos_q.append((x, y))
+                # if not allow_growth:
+                #     self.pos_q.popleft()
+                # Update playing field.
+                x_head, y_head = self.pos_q[-1]
+                self.field[y_head, x_head] = 1
 
-            # Register snake's head.
-            self.pos_q.append((x, y))
+                # Add new food.
+                print(f"{self.pos_q = }")
+                print(f"{self.coord = }")
+                # pos_snake = set(self.pos_snake)
+                # pos_cells = set(self.pos_cells)
+                pos_q = set(self.pos_q)
+                coord = set(self.coord)
+                empty = coord - pos_q
+                print(f"{empty = }")
+                self.coord = list(empty)
+                if len(self.coord) > 0:
+                    idx = random.randrange(len(self.coord))
+                    self.coord[idx], self.coord[-1] = self.coord[-1], self.coord[idx]
+                    x_food, y_food = self.coord.pop()
+                    self.field[y_food, x_food] = -1
+                    done = False
+                else:
+                    # Playing field completely populated by snake(s).
+                    done = True
 
-            # Update playing field.
-            x_head, y_head = self.pos_q[-1]
-            self.field[y_head, x_head] = 1
-            x_tail, y_tail = self.pos_q[0]
-            self.field[y_tail, x_tail] = 0
+            else:
+                # No food found yields no reward.
+                reward = 0.0
+                done = False
 
-            # Register snake's tail.
-            self.pos_q.popleft()
+                # Register snake's head.
+                self.pos_q.append((x, y))
+
+                # Update playing field.
+                x_head, y_head = self.pos_q[-1]
+                self.field[y_head, x_head] = 1
+                x_tail, y_tail = self.pos_q[0]
+                self.field[y_tail, x_tail] = 0
+
+                # Register snake's tail.
+                self.pos_q.popleft()
 
         state = self.field.float()[None, ...]
 
