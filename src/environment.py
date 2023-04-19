@@ -119,29 +119,6 @@ class Snakes(Environment):
         l = list(range(self.size))
         self.coord = [(x, y) for x in l for y in l]
 
-
-    @torch.no_grad()
-    def _has_won(self, player: int) -> bool:
-        """Checks if player has won the game.
-
-        Args:
-            player: The player's id.
-
-        Returns:
-            Boolean indicating if game is finished
-            (True if game is finished, False otherwise).
-        """
-        raise NotImplementedError()
-
-    @torch.no_grad()
-    def _is_draw(self) -> bool:
-        """Checks if the game is tied.
-
-        Return:
-            Boolean indicating if game is a draw.
-        """
-        raise NotImplementedError()
-
     @torch.no_grad()
     def is_finished(self) -> tuple[bool, int]:
         """Checks if game is finished.
@@ -150,29 +127,6 @@ class Snakes(Environment):
             Tuple with boolean indicating if game
             is finished (True if game is finished, False otherwise)
             and winner of game (player X (1) or player O (-1))
-        """
-        raise NotImplementedError()
-
-    def is_free(self, x: int, y: int) -> bool:
-        """Checks whether field is free or already marked.
-
-        Args:
-            x: x-coordinate.
-            y: y-coordinate.
-
-        Returns:
-            True is field is free. False if field is already marked.
-        """
-        raise NotImplementedError()
-
-    @torch.no_grad()
-    def mark_field(self, x: int, y: int, player: int) -> None:
-        """Marks field with either X (1) or O (-1)
-
-        Args:
-            x: x-coordinate.
-            y: y-coordinate.
-            player: Integer representing player A (1) or B (-1).
         """
         raise NotImplementedError()
 
@@ -293,12 +247,18 @@ class Snakes(Environment):
                         print("Draw.")
 
     def is_outside(self, x: int, y: int) -> bool:
-        """Checks if action leads to collision with wall."""
+        """Checks for collision with wall."""
         if x == -1 or y == -1:
             return True
         elif x == self.size or y == self.size:
             return True
         return False 
+
+    def is_body(self, x: int, y: int) -> bool:
+        """Checks for collision with body."""
+        if (x, y) in set(self.pos_q):
+            return True
+        return False
 
     def step(self, action: int, agent_id: int, player: int = 0) -> tuple:
         """Performs a single game move for agent.
@@ -315,9 +275,9 @@ class Snakes(Environment):
             A tuple holding state (matrix), reward (scalar), 
             and done (bool) indicating if game is finished.
         """
+        print("\n**********\n", "** STEP **", "\n**********\n")
         # Get head coordinates.
         x, y = self.pos_q[-1]
-        x_old, y_old = x, y
 
         # Compute new head coordinates.
         dx, dy = self.action_to_move[action]
@@ -327,17 +287,12 @@ class Snakes(Environment):
         y += dy
 
         # Allows to turn growth on / off.
-        allow_growth = True
+        # allow_growth = True
 
         # Check for collisions.
-        # TODO
-        # if self.field[x, y] is is_body(x, y) or is_outside(x, y):
-        #    reward = -1.0
-        #    done = True
-        if self.is_outside(x, y):
+        if self.is_outside(x, y) or self.is_body(x, y):
             reward = -1.0
             done = True
-
         else:
             # Check if there is food at the new coordinates.
             if self.field[y, x] == -1:
@@ -345,22 +300,19 @@ class Snakes(Environment):
                 reward = 1.0
                 # Snake moves and grows.
                 self.pos_q.append((x, y))
-                # if not allow_growth:
-                #     self.pos_q.popleft()
                 # Update playing field.
                 x_head, y_head = self.pos_q[-1]
                 self.field[y_head, x_head] = 1
 
                 # Add new food.
-                print(f"{self.pos_q = }")
-                print(f"{self.coord = }")
-                # pos_snake = set(self.pos_snake)
-                # pos_cells = set(self.pos_cells)
                 pos_q = set(self.pos_q)
+                print(f"{pos_q = }")
                 coord = set(self.coord)
+                print(f"{coord = }")
                 empty = coord - pos_q
                 print(f"{empty = }")
-                self.coord = list(empty)
+                # self.coord = list(empty)  # Update coordinates.
+                # print(f"{self.coord = }")
                 if len(self.coord) > 0:
                     idx = random.randrange(len(self.coord))
                     self.coord[idx], self.coord[-1] = self.coord[-1], self.coord[idx]
@@ -391,26 +343,6 @@ class Snakes(Environment):
         state = self.field.float()[None, ...]
 
         return state, reward, done
-
-        # x, y = self._index_to_coordinate(action)
-        # if self.is_free(x=x, y=y):
-        #     self.mark_field(x=x, y=y, player=player)
-        #     is_finished, winner = self.is_finished()
-        #     if is_finished and winner == player:
-        #         # Maximum reward for winning the game.
-        #         reward = 1.0
-        #     elif is_finished and winner == 0:
-        #         # No reward if game is a draw.
-        #         reward = 0.0
-        #     else:
-        #         # No reward for correctly marking a field.
-        #         reward = 0.0
-        # else:  # Negative reward and end of game if occupied field is marked.
-        #     reward = -1.0
-        #     is_finished = True
-        # state = self.field.float()[None, ...]
-        # done = is_finished
-        # return state, reward, done
 
     def reset(self) -> torch.Tensor:
         """Resets the playing flied."""
