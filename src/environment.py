@@ -247,7 +247,15 @@ class Snakes(Environment):
                         print("Draw.")
 
     def is_outside(self, x: int, y: int) -> bool:
-        """Checks for collision with wall."""
+        """Checks for collision with wall.
+
+        Args:
+            x: x-coordinate.
+            y: y-coordinate.
+
+        Returns:
+            True if snake attempts to move outside of playing field. False otherwise.
+        """
         if x == -1 or y == -1:
             return True
         elif x == self.size or y == self.size:
@@ -255,8 +263,19 @@ class Snakes(Environment):
         return False 
 
     def is_body(self, x: int, y: int) -> bool:
-        """Checks for collision with body."""
+        """Checks for collision with body.
+
+        Args:
+            x: x-coordinate.
+            y: y-coordinate.
+
+        Returns:
+            True if snake collides with body. False otherwise.
+        """
         if (x, y) in set(self.pos_q):
+            if (x, y) == self.pos_q[0]:
+                # Allow 'collision' with tail.
+                return False
             return True
         return False
 
@@ -324,10 +343,10 @@ class Snakes(Environment):
                 self.pos_q.append((x, y))
 
                 # Update playing field.
-                x_head, y_head = self.pos_q[-1]
-                self.field[y_head, x_head] = 1
                 x_tail, y_tail = self.pos_q[0]
                 self.field[y_tail, x_tail] = 0
+                x_head, y_head = self.pos_q[-1]
+                self.field[y_head, x_head] = 1
 
                 # Register snake's tail.
                 self.pos_q.popleft()
