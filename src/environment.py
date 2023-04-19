@@ -306,23 +306,15 @@ class Snakes(Environment):
 
                 # Add new food.
                 pos_q = set(self.pos_q)
-                print(f"{pos_q = }")
                 coord = set(self.coord)
-                print(f"{coord = }")
-                empty = coord - pos_q
-                print(f"{empty = }")
-                # self.coord = list(empty)  # Update coordinates.
-                # print(f"{self.coord = }")
-                if len(self.coord) > 0:
-                    idx = random.randrange(len(self.coord))
-                    self.coord[idx], self.coord[-1] = self.coord[-1], self.coord[idx]
-                    x_food, y_food = self.coord.pop()
+                empty = list(coord - pos_q)
+                if len(empty) > 0:
+                    x_food, y_food = random.choice(empty)
                     self.field[y_food, x_food] = -1
                     done = False
                 else:
                     # Playing field completely populated by snake(s).
                     done = True
-
             else:
                 # No food found yields no reward.
                 reward = 0.0
