@@ -20,7 +20,9 @@ class Agent:
 
         self.stats = {"epsilon": None, "loss": None, "reward": None}
 
-    def _normalize_rewards(self, rewards: torch.Tensor, eps: float = 1e-05) -> torch.Tensor:
+    def _normalize_rewards(
+        self, rewards: torch.Tensor, eps: float = 1e-05
+    ) -> torch.Tensor:
         """Normalizes rewards.
 
         Normalizes rewards if there is more than one reward

@@ -5,7 +5,7 @@ from src.argparser import argument_parser
 from src.model import Model
 from src.environment import Snakes
 
-     
+
 if __name__ == "__main__":
     args = argument_parser()
     print_args(args=args)

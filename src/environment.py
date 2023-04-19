@@ -60,7 +60,7 @@ class Snakes(Environment):
     # Rewards
 
         +1 for finding food
-        -1 if another agent find the food 
+        -1 if another agent find the food
         -1 for hitting a wall
         -1 for hitting the own or others agent's body
         0 if game is draw?
@@ -101,7 +101,7 @@ class Snakes(Environment):
 
     def _init_agents(self) -> None:
         """Initializes position of agents.
-    
+
         TODO: Add random non-overlapping initial positions.
         """
         pos_init = (2, 2)  # TODO
@@ -164,7 +164,6 @@ class Snakes(Environment):
         done = False
 
         while not done:
-
             # Agent a
             action = agent_a.get_action(state)
             new_state, reward, done = self.step(action=action, player=-1)
@@ -209,7 +208,6 @@ class Snakes(Environment):
         state = self.reset()
 
         while not done:
-
             # print("Machine")
             # action = model.predict(state)
             # state, reward, done = self.step(action=action, player=-1)
@@ -260,7 +258,7 @@ class Snakes(Environment):
             return True
         elif x == self.size or y == self.size:
             return True
-        return False 
+        return False
 
     def is_body(self, x: int, y: int) -> bool:
         """Checks for collision with body.
@@ -287,11 +285,11 @@ class Snakes(Environment):
         food in case no food is left.
 
         Args:
-            action: The action passed by the user or predicted by the 
+            action: The action passed by the user or predicted by the
             neural network.
 
         Returns:
-            A tuple holding state (matrix), reward (scalar), 
+            A tuple holding state (matrix), reward (scalar),
             and done (bool) indicating if game is finished.
         """
         print("\n**********\n", "** STEP **", "\n**********\n")
@@ -359,7 +357,7 @@ class Snakes(Environment):
         """Resets the playing flied."""
         self.field = torch.zeros(size=(self.size, self.size), dtype=torch.long)
         state = self.field.float()[None, ...]
-        self.pos_s = set()  
+        self.pos_s = set()
         self.pos_q = collections.deque()
         self._init_agents()
         return state
@@ -367,6 +365,10 @@ class Snakes(Environment):
     def __repr__(self) -> str:
         """Prints playing field."""
         prototype = "{:3}" * self.size
-        representation = "\n".join(prototype.format(*row) for row in self.field.tolist())
-        representation = representation.replace("-1", " x").replace("1", "o").replace("0", ".")
+        representation = "\n".join(
+            prototype.format(*row) for row in self.field.tolist()
+        )
+        representation = (
+            representation.replace("-1", " x").replace("1", "o").replace("0", ".")
+        )
         return "\n" + representation + "\n"

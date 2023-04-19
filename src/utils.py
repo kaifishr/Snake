@@ -39,7 +39,9 @@ def load_checkpoint(model: torch.nn.Module, args) -> None:
         model_name: Name of policy model.
         args: Parsed arguments.
     """
-    checkpoint_name = f"{f'{args.model_name}_{args.algorithm}' if args.model_name else 'model'}"
+    checkpoint_name = (
+        f"{f'{args.model_name}_{args.algorithm}' if args.model_name else 'model'}"
+    )
     checkpoint_path = "weights"
     model_path = pathlib.Path(checkpoint_path) / f"{checkpoint_name}.pth"
 
@@ -48,7 +50,10 @@ def load_checkpoint(model: torch.nn.Module, args) -> None:
         model.load_state_dict(state_dict=state_dict)
         print(f"\nModel '{checkpoint_name}' loaded.\n")
     else:
-        warnings.warn(f"\nModel checkpoint '{checkpoint_name}' not found. " "Continuing with random weights.\n")
+        warnings.warn(
+            f"\nModel checkpoint '{checkpoint_name}' not found. "
+            "Continuing with random weights.\n"
+        )
 
 
 def print_args(args) -> None:
@@ -77,6 +82,7 @@ def eval(function: callable) -> callable:
     Returns:
         Decorated function.
     """
+
     @functools.wraps(function)
     def eval_wrapper(self, *args, **kwargs):
         self.eval()

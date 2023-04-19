@@ -42,7 +42,9 @@ class DeepQLearning(Agent):
 
         self.memory = deque(maxlen=self.memory_size)
 
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
+        self.optimizer = torch.optim.Adam(
+            self.model.parameters(), lr=self.learning_rate
+        )
         self.criterion = nn.MSELoss()
 
     @torch.no_grad()
@@ -88,7 +90,9 @@ class DeepQLearning(Agent):
         """Create training set from memory."""
 
         # Use subset of replay memory for training as transitions are strongly correlated.
-        replay_batch = random.sample(self.memory, min(len(self.memory), self.batch_size))
+        replay_batch = random.sample(
+            self.memory, min(len(self.memory), self.batch_size)
+        )
 
         # Normalize the rewards of sampled batch.
         rewards = torch.tensor([memory[2] for memory in replay_batch])
@@ -107,7 +111,9 @@ class DeepQLearning(Agent):
 
         for i, (_, action, reward, _, done) in enumerate(replay_batch):
             if not done:
-                q_targets[i, action] = reward + self.gamma * torch.amax(q_targets_new[i])
+                q_targets[i, action] = reward + self.gamma * torch.amax(
+                    q_targets_new[i]
+                )
             else:
                 q_targets[i, action] = reward
 

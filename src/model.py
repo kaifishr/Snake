@@ -50,13 +50,17 @@ class Model(nn.Module):
         ]
 
         hidden_layers = [
-            ResidualBlock(in_features=hidden_features, out_features=hidden_features, args=args)
+            ResidualBlock(
+                in_features=hidden_features, out_features=hidden_features, args=args
+            )
             for _ in range(num_layers)
         ]
 
         output_layer = [
             nn.Linear(in_features=hidden_features, out_features=num_actions),
-            nn.Softmax(dim=-1) if args.algorithm == "policy_gradient" else nn.Identity(),
+            nn.Softmax(dim=-1)
+            if args.algorithm == "policy_gradient"
+            else nn.Identity(),
         ]
 
         self.model = nn.Sequential(*input_layer, *hidden_layers, *output_layer)

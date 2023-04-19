@@ -7,7 +7,7 @@ the neural network of an agent to play Snakes.
 from src.utils import print_args
 from src.utils import set_random_seed
 from src.argparser import argument_parser
-from src.environment import Snakes 
+from src.environment import Snakes
 from src.model import Model
 from src.policy_gradient import PolicyGradient
 from src.deep_q_learning import DeepQLearning
@@ -15,7 +15,6 @@ from src.trainer import train
 
 
 if __name__ == "__main__":
-
     args = argument_parser()
     print_args(args=args)
 
@@ -38,4 +37,6 @@ if __name__ == "__main__":
         train(env=env, agent_a=agent_a, agent_b=agent_b, args=args)
 
     else:
-        raise NotImplementedError(f"Reinforcement algorithm {args.algorithm} not implemented")
+        raise NotImplementedError(
+            f"Reinforcement algorithm {args.algorithm} not implemented"
+        )

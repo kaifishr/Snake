@@ -30,7 +30,9 @@ class PolicyGradient(Agent):
         self.learning_rate = args.learning_rate
         self.gamma = args.gamma
 
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
+        self.optimizer = torch.optim.Adam(
+            self.model.parameters(), lr=self.learning_rate
+        )
         self.criterion = torch.nn.CrossEntropyLoss(reduction="none")
 
     @torch.no_grad()
@@ -74,7 +76,9 @@ class PolicyGradient(Agent):
         discounted_rewards = self._normalize_rewards(rewards=discounted_rewards)
 
         states = torch.vstack(states)
-        target_actions = F.one_hot(torch.tensor(actions), num_classes=self.size**2).float()
+        target_actions = F.one_hot(
+            torch.tensor(actions), num_classes=self.size**2
+        ).float()
 
         # https://discuss.pytorch.org/t/per-class-and-per-sample-weighting/25530/3
         self.optimizer.zero_grad()

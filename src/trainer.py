@@ -14,7 +14,6 @@ def train(env: Environment, agent_a: Agent, agent_b: Agent, args) -> None:
     writer = SummaryWriter()
 
     for episode in range(args.num_episodes):
-
         # Run episode and let the agents compete.
         if random.random() < 0.5:
             events_a, events_b = env.run_episode(agent_a, agent_b)
@@ -26,7 +25,6 @@ def train(env: Environment, agent_a: Agent, agent_b: Agent, args) -> None:
         agent_b.step(events_b)
 
         if episode % 500 == 0:
-
             for key, value in agent_a.stats.items():
                 if value:
                     writer.add_scalar(f"agent_a/{key}", value, episode)
