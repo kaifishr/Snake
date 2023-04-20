@@ -199,51 +199,6 @@ class Snakes(Environment):
 
         return events_a, events_b
 
-    def play(self, model: nn.Module = None) -> None:
-        """Runs game in solo mode or against pretrained agents."""
-
-        print("\nGame started.\n")
-
-        done = False
-        state = self.reset()
-
-        while not done:
-            # print("Machine")
-            # action = model.predict(state)
-            # state, reward, done = self.step(action=action, player=-1)
-            # print(self)
-            # if self.debug:
-            #     print(f"{state = }")
-            #     print(f"{reward = }")
-            #     print(f"{done = }")
-            # if done:
-            #     if reward == 1:
-            #         print("You lose.")
-            #     elif reward == -1:
-            #         print("Illegal move. Computer lost.")
-            #     else:
-            #         print("Draw.")
-
-            if not done:
-                print(self)
-                action = int(input(f"Enter an index between [0, 3]: "))
-                state, reward, done = self.step(action=action, agent_id=1)
-
-                print(self)
-
-                if self.debug:
-                    # print(f"{state = }")
-                    print(f"{reward = }")
-                    print(f"{done = }")
-
-                if done:
-                    if reward == 1:
-                        print("You win.")
-                    elif reward == -1:
-                        print("Illegal move. Computer won.")
-                    else:
-                        print("Draw.")
-
     def is_outside(self, x: int, y: int) -> bool:
         """Checks for collision with wall.
 
@@ -260,7 +215,7 @@ class Snakes(Environment):
             return True
         return False
 
-    def is_body(self, x: int, y: int) -> bool:
+    def is_overlap(self, x: int, y: int) -> bool:
         """Checks for collision with body.
 
         Args:
@@ -271,9 +226,8 @@ class Snakes(Environment):
             True if snake collides with body. False otherwise.
         """
         if (x, y) in set(self.pos_q):
-            if (x, y) == self.pos_q[0]:
-                # Allow 'collision' with tail.
-                return False
+            # if (x, y) == self.pos_q[0]:  # Allow 'collision' with tail.
+            #     return False
             return True
         return False
 
@@ -307,7 +261,7 @@ class Snakes(Environment):
         # allow_growth = True
 
         # Check for collisions.
-        if self.is_outside(x, y) or self.is_body(x, y):
+        if self.is_outside(x, y) or self.is_overlap(x, y):
             reward = -1.0
             done = True
         else:
@@ -352,6 +306,45 @@ class Snakes(Environment):
         state = self.field.float()[None, ...]
 
         return state, reward, done
+
+    def play(self, model: nn.Module = None) -> None:
+        """Runs game in solo mode."""
+
+        print("\nGame started.\n")
+        print(f"Enter an index between [0, 3]. Pres 'q' to quit.")
+
+        done = False
+        state = self.reset()
+        print(self)
+
+        while not done:
+
+            command = input("Enter command: ")
+
+            if command == "q":
+                exit("End game.")
+
+            elif command.isnumeric():
+                action = int(command)
+
+                state, reward, done = self.step(action=action, agent_id=1)
+
+                print(self)
+
+                if self.debug:
+                    print(f"{state = }")
+                    print(f"{reward = }")
+                    print(f"{done = }")
+
+                if done:
+                    if reward == 1:
+                        print("You win.")
+                    elif reward == -1:
+                        print("Illegal move. Computer won.")
+                    else:
+                        print("Draw.")
+            else:
+                print("Invalid input.")
 
     def reset(self) -> torch.Tensor:
         """Resets the playing flied."""

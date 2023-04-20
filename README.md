@@ -265,6 +265,7 @@ A benefit of deep Q-learning is the possibility of updating the policy's paramet
 
 ## TODO
 
+- Encode length of snake. [1, 2]
 - Set-up engine for single agent.
 - Turn on / off growth.
 - Implement adaptive epsilon decay rate for deep q-learning.
