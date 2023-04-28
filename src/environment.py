@@ -340,7 +340,11 @@ class Snakes(Environment):
         self.fig, axis = plt.subplots()
         self.fig.canvas.manager.set_window_title("Snakes")
         field = self.field.numpy()
-        self.img = axis.imshow(field, vmin=-1.0, vmax=2.0, cmap="bwr")
+        extent = (0, field.shape[1], field.shape[0], 0)
+        self.img = axis.imshow(field, vmin=-1.0, vmax=2.0, cmap="bwr", 
+                               interpolation='none', aspect='equal', 
+                               extent=extent)
+        axis.grid(color="k", linewidth=1)
         self.fig.canvas.draw()
         plt.show(block=False)
 
