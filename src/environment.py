@@ -85,19 +85,25 @@ class Snakes(Environment):
     """
 
     def __init__(self, size: int, num_agents: int = 1) -> None:
-        """Initializes a square Tic-tac-toe field."""
+        """Initializes a square playing field."""
         super().__init__()
         self.size = size
         self.num_agents = num_agents
-        self.field = torch.zeros(size=(size, size), dtype=torch.long)
+        self.field = torch.zeros(size=(size, size))
 
-        # Keep track of snake's position. TODO: Change later to tuple of sets and deques.
+        # Keep track of snake's position. 
+        # TODO: Change later to tuple of sets and deques.
         self.pos_s = None  # TODO: One set should be enough for all agents.
         self.pos_q = None
         self.coord = None  # Holds coordiante tuples of playing field.
 
         # Lookup table to map actions to moves.
         self.action_to_move = {0: (1, 0), 1: (0, -1), 2: (-1, 0), 3: (0, 1)}
+
+        # Rendering
+        self.is_render = True
+        if self.is_render:
+            self._init_render()
 
     def _init_agents(self) -> None:
         """Initializes position of agents.
@@ -246,14 +252,12 @@ class Snakes(Environment):
             A tuple holding state (matrix), reward (scalar),
             and done (bool) indicating if game is finished.
         """
-        print("\n**********\n", "** STEP **", "\n**********\n")
+        print("\n **********\n", "** STEP **", "\n **********\n")
         # Get head coordinates.
         x, y = self.pos_q[-1]
 
         # Compute new head coordinates.
         dx, dy = self.action_to_move[action]
-        print(f"{x = }, {y = }")
-        print(f"{dx = }, {dy = }")
         x += dx
         y += dy
 
@@ -272,8 +276,8 @@ class Snakes(Environment):
                 # Snake moves and grows.
                 self.pos_q.append((x, y))
                 # Update playing field.
-                x_head, y_head = self.pos_q[-1]
-                self.field[y_head, x_head] = 1
+                # x_head, y_head = self.pos_q[-1]
+                # self.field[y_head, x_head] = 1
 
                 # Add new food.
                 pos_q = set(self.pos_q)
@@ -297,11 +301,16 @@ class Snakes(Environment):
                 # Update playing field.
                 x_tail, y_tail = self.pos_q[0]
                 self.field[y_tail, x_tail] = 0
-                x_head, y_head = self.pos_q[-1]
-                self.field[y_head, x_head] = 1
+                # x_head, y_head = self.pos_q[-1]
+                # self.field[y_head, x_head] = 1
 
                 # Register snake's tail.
                 self.pos_q.popleft()
+
+            # Encodes snake's body in playing field.
+            encoding = torch.linspace(start=1.0, end=2.0, steps=len(self.pos_q))
+            for i, (x, y) in enumerate(self.pos_q):
+                self.field[y, x] = encoding[i]
 
         state = self.field.float()[None, ...]
 
@@ -316,19 +325,22 @@ class Snakes(Environment):
         done = False
         state = self.reset()
         print(self)
+        if self.is_render:
+            self._render()
 
         while not done:
 
             command = input("Enter command: ")
 
             if command == "q":
-                exit("End game.")
-
+                exit("Game quit.")
             elif command.isnumeric():
                 action = int(command)
+                is_valid_command = 0 <= action <= 3
+
+            if is_valid_command:
 
                 state, reward, done = self.step(action=action, agent_id=1)
-
                 print(self)
 
                 if self.debug:
@@ -344,12 +356,35 @@ class Snakes(Environment):
                     else:
                         print("Draw.")
             else:
-                print("Invalid input.")
+                print("Invalid input. Enter an integer from 0 to 3.")
+
+            if self.is_render:
+                self._render()
+
+    def _init_render(self) -> None:
+        self.fig, axis = plt.subplots()
+        self.fig.canvas.manager.set_window_title("Snakes")
+        field = self.field.numpy()
+        self.img = axis.imshow(field, vmin=-1.0, vmax=2.0, cmap="bwr")
+        self.fig.canvas.draw()
+        plt.show(block=False)
+
+    def _render(self) -> None:
+        """Renders playing field.
+
+        Consider this answer for faster rendering:
+        https://stackoverflow.com/questions/40126176/fast-live-plotting-in-matplotlib-pyplot
+        or use PyGame.
+        """
+        field = self.field.numpy()
+        self.img.set_data(field)
+        self.fig.canvas.draw()
+        self.fig.canvas.flush_events()
 
     def reset(self) -> torch.Tensor:
         """Resets the playing flied."""
-        self.field = torch.zeros(size=(self.size, self.size), dtype=torch.long)
-        state = self.field.float()[None, ...]
+        self.field = torch.zeros(size=(self.size, self.size))
+        state = self.field[None, ...]
         self.pos_s = set()
         self.pos_q = collections.deque()
         self._init_agents()
@@ -357,11 +392,11 @@ class Snakes(Environment):
 
     def __repr__(self) -> str:
         """Prints playing field."""
+        field = torch.where(self.field >= 1.0, 1.0, self.field).long()
         prototype = "{:3}" * self.size
-        representation = "\n".join(
-            prototype.format(*row) for row in self.field.tolist()
-        )
-        representation = (
-            representation.replace("-1", " x").replace("1", "o").replace("0", ".")
-        )
+        representation = [prototype.format(*row) for row in field.tolist()]
+        representation = "\n".join(representation)
+        substitutes = [("-1", " x"), ("1", "o"), ("0", ".")]
+        for item1, item2 in substitutes:
+            representation = representation.replace(item1, item2)
         return "\n" + representation + "\n"

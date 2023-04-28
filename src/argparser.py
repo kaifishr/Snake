@@ -8,8 +8,8 @@ import argparse
 
 def argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="TicTacToe",
-        description="Trains agent to play Tic-tac-toe with reinforcement learning.",
+        prog="Snakes",
+        description="Trains agent to play Snakes with reinforcement learning.",
     )
 
     parser.add_argument(
@@ -95,7 +95,7 @@ def argument_parser() -> argparse.ArgumentParser:
     # Environment #
     ###############
 
-    parser.add_argument("-fs", "--field-size", dest="field_size", default=3, type=int)
+    parser.add_argument("-fs", "--field-size", dest="field_size", default=5, type=int)
     parser.add_argument(
         "-pm",
         "--play-mode",
@@ -131,5 +131,10 @@ def argument_parser() -> argparse.ArgumentParser:
         default=None,
         type=str,
     )
+
+    # TODO Arguments
+    # - allow snakes to grow on / off
+    # - turn rendering on / off
+    # - colorcode snakes on / off
 
     return parser.parse_args()
