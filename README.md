@@ -265,8 +265,9 @@ A benefit of deep Q-learning is the possibility of updating the policy's paramet
 
 ## TODO
 
-- Add option for growth
-- Add option for encoding
+- Enable training for single snake.
+- Add option for growth.
+- Add option for encoding.
 - Implement adaptive epsilon decay rate for deep q-learning.
 - Add Boltzmann exploration and epsilon-greedy sampling.
 
