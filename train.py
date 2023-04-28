@@ -22,21 +22,16 @@ if __name__ == "__main__":
 
     if args.algorithm == "policy_gradient":
         set_random_seed(seed=args.random_seed)
-        model_a = Model(args)
-        model_b = Model(args)
-        agent_a = PolicyGradient(model=model_a, args=args)
-        agent_b = PolicyGradient(model=model_b, args=args)
-        train(env=env, agent_a=agent_a, agent_b=agent_b, args=args)
+        model = Model(args)
+        agent = PolicyGradient(model=model, args=args)
+        train(env=env, agent=agent, args=args)
 
     elif args.algorithm == "deep_q_learning":
         set_random_seed(seed=args.random_seed)
-        model_a = Model(args)
-        model_b = Model(args)
-        agent_a = DeepQLearning(model=model_a, args=args)
-        agent_b = DeepQLearning(model=model_b, args=args)
-        train(env=env, agent_a=agent_a, agent_b=agent_b, args=args)
+        model = Model(args)
+        agent = DeepQLearning(model=model, args=args)
+        train(env=env, agent=agent, args=args)
 
     else:
-        raise NotImplementedError(
-            f"Reinforcement algorithm {args.algorithm} not implemented"
-        )
+        message = f"Reinforcement algorithm {args.algorithm} not implemented"
+        raise NotImplementedError(message)

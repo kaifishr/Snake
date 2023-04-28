@@ -131,6 +131,7 @@ dmypy.json
 #######
 # Vim #
 #######
+
 # Swap
 [._]*.s[a-v][a-z]
 !*.svg  # comment out if you don't need vector files
@@ -150,3 +151,9 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un~
+
+###############
+# Tensorboard #
+###############
+
+/runs

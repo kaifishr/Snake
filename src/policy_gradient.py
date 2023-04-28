@@ -76,9 +76,7 @@ class PolicyGradient(Agent):
         discounted_rewards = self._normalize_rewards(rewards=discounted_rewards)
 
         states = torch.vstack(states)
-        target_actions = F.one_hot(
-            torch.tensor(actions), num_classes=self.size**2
-        ).float()
+        target_actions = F.one_hot(torch.tensor(actions), num_classes=4).float()
 
         # https://discuss.pytorch.org/t/per-class-and-per-sample-weighting/25530/3
         self.optimizer.zero_grad()

@@ -37,7 +37,7 @@ class Model(nn.Module):
 
         field_size = args.field_size
         dims_state = field_size**2
-        num_actions = field_size**2
+        num_actions = 4
         hidden_features = args.num_hidden_units
         num_layers = args.num_layers
         prob_dropout = args.dropout_probability

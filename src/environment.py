@@ -132,7 +132,6 @@ class Snakes(Environment):
         Returns:
             Tuple with boolean indicating if game
             is finished (True if game is finished, False otherwise)
-            and winner of game (player X (1) or player O (-1))
         """
         raise NotImplementedError()
 
@@ -150,60 +149,36 @@ class Snakes(Environment):
         x, y = divmod(index, self.size)  # index // self.size, index % self.size
         return x, y
 
-    def run_episode(self, agent_a: Agent, agent_b: Agent) -> tuple:
+    def run_episode(self, agent: Agent) -> tuple:
         """Let agents play one episode of the game.
 
         The episode stops if the game is won, lost or a draw.
 
         Args:
-            agent_a: Agent holding policy network and reinforcement algorithm.
-            agent_b: Agent holding policy network and reinforcement algorithm.
+            agent: Agent holding policy network and reinforcement algorithm.
 
         Returns:
             Tuple for each agent holding states, actions, rewards,
             new_states, and dones of the episode played.
         """
-        events_a = dict(states=[], actions=[], rewards=[], new_states=[], dones=[])
-        events_b = dict(states=[], actions=[], rewards=[], new_states=[], dones=[])
+        events = dict(states=[], actions=[], rewards=[], new_states=[], dones=[])
 
         state = self.reset()
         done = False
 
         while not done:
-            # Agent a
-            action = agent_a.get_action(state)
-            new_state, reward, done = self.step(action=action, player=-1)
+            action = agent.get_action(state)
+            new_state, reward, done = self.step(action=action)
 
-            events_a["states"].append(copy.deepcopy(state))
-            events_a["actions"].append(action)
-            events_a["rewards"].append(reward)
-            events_a["new_states"].append(copy.deepcopy(new_state))
-            events_a["dones"].append(done)
-
-            # Player gets negative reward if other player wins.
-            if done and reward == 1:
-                events_b["rewards"][-1] = -1
+            events["states"].append(copy.deepcopy(state))
+            events["actions"].append(action)
+            events["rewards"].append(reward)
+            events["new_states"].append(copy.deepcopy(new_state))
+            events["dones"].append(done)
 
             state = new_state
 
-            # Agent b
-            if not done:
-                action = agent_b.get_action(state)
-                new_state, reward, done = self.step(action=action, player=1)
-
-                events_b["states"].append(copy.deepcopy(state))
-                events_b["actions"].append(action)
-                events_b["rewards"].append(reward)
-                events_b["new_states"].append(copy.deepcopy(new_state))
-                events_b["dones"].append(done)
-
-                # Player gets negative reward if other player wins.
-                if done and reward == 1:
-                    events_a["rewards"][-1] = -1
-
-                state = new_state
-
-        return events_a, events_b
+        return events 
 
     def is_outside(self, x: int, y: int) -> bool:
         """Checks for collision with wall.
@@ -237,7 +212,7 @@ class Snakes(Environment):
             return True
         return False
 
-    def step(self, action: int, agent_id: int, player: int = 0) -> tuple:
+    def step(self, action: int) -> tuple:
         """Performs a single game move for agent.
 
         A step consists of moving the snakes head to the new position
@@ -340,7 +315,7 @@ class Snakes(Environment):
 
             if is_valid_command:
 
-                state, reward, done = self.step(action=action, agent_id=1)
+                state, reward, done = self.step(action=action)
                 print(self)
 
                 if self.debug:
