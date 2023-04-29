@@ -15,7 +15,7 @@ import random
 
 import matplotlib.pyplot as plt
 import torch
-import torch.nn as nn
+# import torch.nn as nn
 
 from src.agent import Agent
 
@@ -31,16 +31,16 @@ class Environment:
 class Snakes(Environment):
     """Snakes environment.
 
-    A simple environment for the game Snakes.
+    A simple multi-environment for the game Snakes.
 
     |``````````````````|
-    | X  >-ooooooooooo |
-    |                O |
-    |         oooooooo |
-    |         O        |
-    |         oooooo   |
-    |              O   |
-    |           oooo   |
+    | X  >oooooooooooo |
+    | v              O |
+    | Oooooo  oooooooo |
+    |      O  O        |
+    |  ooooo  oooooo   |
+    |  O           O   |
+    |  ooooooooo   ooo |
     |..................|
 
     # Action space
@@ -99,6 +99,7 @@ class Snakes(Environment):
 
         # Lookup table to map actions to moves.
         self.action_to_move = {0: (1, 0), 1: (0, -1), 2: (-1, 0), 3: (0, 1)}
+        self.key_to_action = {"w": 1, "a": 2, "s": 3, "d": 0}
 
         # Rendering
         self.is_render = True
@@ -227,7 +228,6 @@ class Snakes(Environment):
             A tuple holding state (matrix), reward (scalar),
             and done (bool) indicating if game is finished.
         """
-        print("\n **********\n", "** STEP **", "\n **********\n")
         # Get head coordinates.
         x, y = self.pos_q[-1]
 
@@ -291,11 +291,11 @@ class Snakes(Environment):
 
         return state, reward, done
 
-    def play(self, model: nn.Module = None) -> None:
+    def play(self) -> None:
         """Runs game in solo mode."""
 
         print("\nGame started.\n")
-        print(f"Enter an index between [0, 3]. Pres 'q' to quit.")
+        print(f"Use 'WASD' keys to move. Press 'q' to quit.")
 
         done = False
         state = self.reset()
@@ -305,16 +305,14 @@ class Snakes(Environment):
 
         while not done:
 
-            command = input("Enter command: ")
+            key = input("Enter command: ")
 
-            if command == "q":
+            if key == "q":
                 exit("Game quit.")
-            elif command.isnumeric():
-                action = int(command)
-                is_valid_command = 0 <= action <= 3
 
-            if is_valid_command:
+            elif key in self.key_to_action:
 
+                action = self.key_to_action[key]
                 state, reward, done = self.step(action=action)
                 print(self)
 
@@ -331,7 +329,7 @@ class Snakes(Environment):
                     else:
                         print("Draw.")
             else:
-                print("Invalid input. Enter an integer from 0 to 3.")
+                print(f"Invalid input. Use 'WASD' keys to move.")
 
             if self.is_render:
                 self._render()
