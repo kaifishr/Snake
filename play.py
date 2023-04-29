@@ -10,11 +10,15 @@ if __name__ == "__main__":
     args = argument_parser()
     print_args(args=args)
 
-    if args.play_mode == "agent":
+    if args.mode == "agent":
         model = Model(args=args)
         load_checkpoint(model=model, args=args)
         env = Snakes(args=args)
         env.play_agent(model=model)
-    else:  # human play mode
+    elif args.mode == "human":
         env = Snakes(args=args)
         env.play()
+    else:
+        raise NotImplementedError(
+            f"Mode '{args.mode}' not implemented."
+        )

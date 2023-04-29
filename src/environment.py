@@ -90,11 +90,8 @@ class Snakes(Environment):
 
         self.size= args.field_size
         self.field = torch.zeros(size=(self.size, self.size))
-        # self.num_agents = num_agents
 
         # Keep track of snake's position. 
-        # TODO: Change later to tuple of sets and deques.
-        # self.pos_s = None  # TODO: One set should be enough for all agents.
         self.pos_q = None
         self.coord = None  # Holds coordiante tuples of playing field.
 
@@ -114,7 +111,6 @@ class Snakes(Environment):
 
         # Set initial position of snake.
         pos_init = random.choice(self.coord)
-        # self.pos_s.add(pos_init)
         self.pos_q.append(pos_init)
         x, y = pos_init
         self.field[y, x] = 1.0
@@ -137,20 +133,6 @@ class Snakes(Environment):
 
         return done
 
-    def _index_to_coordinate(self, index: int) -> tuple[int, int]:
-        """Converts a flat index into a coordinate tuple.
-
-        'x, y = divmod(a, b)' is equivalent to 'x, y = a // b, a % b'
-
-        Args:
-            index: The index to be converted to a coordinate.
-
-        Returns:
-            Tuple with coordinates.
-        """
-        x, y = divmod(index, self.size)  # index // self.size, index % self.size
-        return x, y
-
     def run_episode(self, agent: Agent) -> tuple:
         """Let agents play one episode of the game.
 
@@ -163,9 +145,15 @@ class Snakes(Environment):
             Tuple for each agent holding states, actions, rewards,
             new_states, and dones of the episode played.
         """
-        events = dict(states=[], actions=[], rewards=[], new_states=[], dones=[])
-
         state = self.reset()
+
+        events = {
+            "states": [], 
+            "actions": [], 
+            "rewards": [], 
+            "new_states": [], 
+            "dones": []
+        }
         done = False
 
         while not done:
@@ -213,16 +201,6 @@ class Snakes(Environment):
             #     return False
             return True
         return False
-
-    @torch.no_grad()
-    def _is_finished(self) -> tuple[bool, int]:
-        """Checks if game is finished.
-
-        Returns:
-            Tuple with boolean indicating if game
-            is finished (True if game is finished, False otherwise)
-        """
-        raise NotImplementedError()
 
     def step(self, action: int) -> tuple:
         """Performs a single game move for agent.
@@ -392,7 +370,6 @@ class Snakes(Environment):
         """Resets the playing flied."""
         self.field = torch.zeros(size=(self.size, self.size))
         state = self.field[None, ...]
-        # self.pos_s = set()
         self.pos_q = collections.deque()
         self._init_agents()
         return state

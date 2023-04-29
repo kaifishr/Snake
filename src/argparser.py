@@ -40,6 +40,32 @@ def argument_parser() -> argparse.ArgumentParser:
         type=int
     )
 
+    ###############
+    # Environment #
+    ###############
+
+    parser.add_argument(
+        "--field-size", 
+        dest="field_size", 
+        default=5, 
+        type=int
+    )
+
+    parser.add_argument(
+        "--mode",
+        dest="mode",
+        default="human",
+        choices=["human", "agent"],
+        type=str,
+    )
+
+    parser.add_argument(
+        "--render",
+        dest="render",
+        default=False,
+        type=str
+    )
+
     ###########
     # Trainer #
     ###########
@@ -47,14 +73,14 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--learning-rate", 
         dest="learning_rate", 
-        default=2e-4, 
+        default=1e-4, 
         type=float
     )
 
     parser.add_argument(
         "--num-episodes", 
         dest="num_episodes", 
-        default=50_000, 
+        default=1_000_000, 
         type=int
     )
 
@@ -78,7 +104,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--epsilon-min",
         dest="epsilon_min",
         help="Minimum epsilon-greedy value.",
-        default=0.01,
+        default=0.05,
         type=float,
     )
 
@@ -86,7 +112,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--decay-rate",
         dest="decay_rate",
         help="Decay rate for epsilon-greedy value.",
-        default=0.99995,
+        default=0.99999,
         type=float,
     )
 
@@ -94,7 +120,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--memory-size",
         dest="memory_size",
         help="Replay memory size. Set to 1 for no memory.",
-        default=5_000,
+        default=10_000,
         type=int,
     )
 
@@ -103,32 +129,6 @@ def argument_parser() -> argparse.ArgumentParser:
         dest="batch_size", 
         default=64,
         type=int
-    )
-
-    ###############
-    # Environment #
-    ###############
-
-    parser.add_argument(
-        "--field-size", 
-        dest="field_size", 
-        default=3, 
-        type=int
-    )
-
-    parser.add_argument(
-        "--play-mode",
-        dest="play_mode",
-        default="human",
-        choices=["human", "agent"],
-        type=str,
-    )
-
-    parser.add_argument(
-        "--render",
-        dest="render",
-        default=False,
-        type=str
     )
 
     #############################
@@ -145,14 +145,14 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-layers", 
         dest="num_layers", 
-        default=2,
+        default=1,
         type=int
     )
 
     parser.add_argument(
         "--hidden-units", 
         dest="num_hidden_units", 
-        default=64, 
+        default=256, 
         type=int
     )
 
@@ -168,16 +168,16 @@ def argument_parser() -> argparse.ArgumentParser:
     # Tensorboard / Model #
     #######################
     parser.add_argument(
-        "--save-stats-every-n-episodes",
-        dest="save_stats_every_n_episodes",
+        "--save-stats-every-n",
+        dest="save_stats_every_n",
         help="Defines how often statistics are saved.",
         default=100,
         type=int,
     )
 
     parser.add_argument(
-        "--save-model-every-n-episodes",
-        dest="save_model_every_n_episodes",
+        "--save-model-every-n",
+        dest="save_model_every_n",
         help="Defines how often the model is saved.",
         default=1000,
         type=int,
