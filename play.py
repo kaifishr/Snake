@@ -15,6 +15,6 @@ if __name__ == "__main__":
         load_checkpoint(model=model, args=args)
         env = Snakes(args=args)
         env.play_agent(model=model)
-    else:  # solo play mode
+    else:  # human play mode
         env = Snakes(args=args)
         env.play()

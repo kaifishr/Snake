@@ -14,7 +14,6 @@ def argument_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "-rs", 
         "--random-seed", 
         dest="random_seed", 
         default=42, 
@@ -26,7 +25,6 @@ def argument_parser() -> argparse.ArgumentParser:
     #########
 
     parser.add_argument(
-        "-a",
         "--algorithm",
         dest="algorithm",
         help="Reinforcement learning algorithm.",
@@ -36,7 +34,6 @@ def argument_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "-na", 
         "--num-agents", 
         dest="num_agents", 
         default=1, 
@@ -122,8 +119,8 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--play-mode",
         dest="play_mode",
-        default="solo",
-        choices=["solo", "agent"],
+        default="human",
+        choices=["human", "agent"],
         type=str,
     )
 

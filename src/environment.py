@@ -107,20 +107,35 @@ class Snakes(Environment):
 
         TODO: Add random non-overlapping initial positions.
         """
-        pos_init = (2, 2)  # TODO
-        # self.pos_s.add(pos_init)
-        self.pos_q.append(pos_init)
-        x, y = pos_init
-        self.field[y, x] = 1  # Snake
-
-        food_pos_init = (0, 0)  # TODO
-        x, y = food_pos_init
-        self.field[y, x] = -1  # Food
-
         # Create list of all playing field coordinates.
         # Used later to place food.
         l = list(range(self.size))
         self.coord = [(x, y) for x in l for y in l]
+
+        # Set initial position of snake.
+        pos_init = random.choice(self.coord)
+        # self.pos_s.add(pos_init)
+        self.pos_q.append(pos_init)
+        x, y = pos_init
+        self.field[y, x] = 1.0
+
+        self._add_food()
+
+    def _add_food(self) -> None:
+        """Adds food at random empty location in playing field."""
+        pos_q = set(self.pos_q)
+        coord = set(self.coord)
+        empty = list(coord - pos_q)
+
+        if len(empty) > 0:
+            x_food, y_food = random.choice(empty)
+            self.field[y_food, x_food] = -1
+            done = False
+        else:
+            # Playing field completely populated by snake(s).
+            done = True
+
+        return done
 
     def _index_to_coordinate(self, index: int) -> tuple[int, int]:
         """Converts a flat index into a coordinate tuple.
@@ -251,16 +266,7 @@ class Snakes(Environment):
                 # self.field[y_head, x_head] = 1
 
                 # Add new food.
-                pos_q = set(self.pos_q)
-                coord = set(self.coord)
-                empty = list(coord - pos_q)
-                if len(empty) > 0:
-                    x_food, y_food = random.choice(empty)
-                    self.field[y_food, x_food] = -1
-                    done = False
-                else:
-                    # Playing field completely populated by snake(s).
-                    done = True
+                done = self._add_food()
             else:
                 # No food found yields no reward.
                 reward = 0.0
