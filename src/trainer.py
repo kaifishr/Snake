@@ -1,5 +1,5 @@
 """Holds the training method."""
-import random
+import time
 
 from torch.utils.tensorboard import SummaryWriter
 
@@ -15,17 +15,20 @@ def train(env: Environment, agent: Agent, args) -> None:
 
     for episode in range(args.num_episodes):
 
+        t0 = time.time()
+
         # Run episode and let the agents compete.
         events = env.run_episode(agent)
 
         # Update network.
         agent.step(events)
 
-        if episode % 500 == 0:  # TODO: Move magic number to arguments.
+        if episode % 50 == 0:  # TODO: Move magic number to arguments.
             for key, value in agent.stats.items():
                 if value:
                     writer.add_scalar(f"agent/{key}", value, episode)
+            print(f"{time.time() - t0:.2}")
 
     writer.close()
 
-    save_checkpoint(model=agent.model, model_name="agent_a", args=args)
+    save_checkpoint(model=agent.model, args=args)

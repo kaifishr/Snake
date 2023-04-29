@@ -14,7 +14,6 @@ class DeepQLearning(Agent):
     More class information.
 
     Attributes:
-        size:
         learning_rate:
         batch_size:
         epsilon:
@@ -31,8 +30,7 @@ class DeepQLearning(Agent):
         """Initializes class."""
         super().__init__(model=model)
 
-        self.size = args.field_size
-        self.learning_rate = args.learning_rate
+        self.lr = args.learning_rate
         self.batch_size = args.batch_size
         self.epsilon = args.epsilon
         self.epsilon_min = args.epsilon_min
@@ -42,9 +40,7 @@ class DeepQLearning(Agent):
 
         self.memory = deque(maxlen=self.memory_size)
 
-        self.optimizer = torch.optim.Adam(
-            self.model.parameters(), lr=self.learning_rate
-        )
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
         self.criterion = nn.MSELoss()
 
     @torch.no_grad()
@@ -62,7 +58,7 @@ class DeepQLearning(Agent):
         """
         if random.random() < self.epsilon:
             # Exploration by choosing random action.
-            action = random.randint(0, self.size**2 - 1)  # m * n - 1
+            action = random.randint(0, 3)
         else:
             # Exploitation by selecting action according to policy
             # with highest predicted utility at current state.

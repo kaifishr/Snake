@@ -27,7 +27,9 @@ def save_checkpoint(model: torch.nn.Module, model_name: str, args) -> None:
     """
     checkpoint_name = f"{f'{model_name}_{args.algorithm}' if model_name else 'model'}"
     checkpoint_path = "weights"
-    model_path = pathlib.Path(checkpoint_path) / f"{checkpoint_name}.pth"
+    dir_path = pathlib.Path(checkpoint_path)
+    pathlib.Path(dir_path).mkdir(parents=True, exist_ok=True)
+    model_path = dir_path / f"{checkpoint_name}.pth"
     torch.save(obj=model.state_dict(), f=model_path)
 
 

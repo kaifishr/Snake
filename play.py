@@ -13,8 +13,8 @@ if __name__ == "__main__":
     if args.play_mode == "agent":
         model = Model(args=args)
         load_checkpoint(model=model, args=args)
-        env = Snakes(size=args.field_size, num_agents=args.num_agents)
-        env.play(model=model)
+        env = Snakes(args=args)
+        env.play_agent(model=model)
     else:  # solo play mode
-        env = Snakes(size=args.field_size, num_agents=1)
+        env = Snakes(args=args)
         env.play()

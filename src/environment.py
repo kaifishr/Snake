@@ -12,10 +12,10 @@ Typical usage:
 import collections
 import copy
 import random
+import time
 
 import matplotlib.pyplot as plt
 import torch
-# import torch.nn as nn
 
 from src.agent import Agent
 
@@ -84,16 +84,17 @@ class Snakes(Environment):
         field: PyTorch tensor representing playing field.
     """
 
-    def __init__(self, size: int, num_agents: int = 1) -> None:
+    def __init__(self, args) -> None:
         """Initializes a square playing field."""
         super().__init__()
-        self.size = size
-        self.num_agents = num_agents
-        self.field = torch.zeros(size=(size, size))
+
+        self.size= args.field_size
+        self.field = torch.zeros(size=(self.size, self.size))
+        # self.num_agents = num_agents
 
         # Keep track of snake's position. 
         # TODO: Change later to tuple of sets and deques.
-        self.pos_s = None  # TODO: One set should be enough for all agents.
+        # self.pos_s = None  # TODO: One set should be enough for all agents.
         self.pos_q = None
         self.coord = None  # Holds coordiante tuples of playing field.
 
@@ -101,18 +102,13 @@ class Snakes(Environment):
         self.action_to_move = {0: (1, 0), 1: (0, -1), 2: (-1, 0), 3: (0, 1)}
         self.key_to_action = {"w": 1, "a": 2, "s": 3, "d": 0}
 
-        # Rendering
-        self.is_render = True
-        if self.is_render:
-            self._init_render()
-
     def _init_agents(self) -> None:
         """Initializes position of agents.
 
         TODO: Add random non-overlapping initial positions.
         """
         pos_init = (2, 2)  # TODO
-        self.pos_s.add(pos_init)
+        # self.pos_s.add(pos_init)
         self.pos_q.append(pos_init)
         x, y = pos_init
         self.field[y, x] = 1  # Snake
@@ -125,16 +121,6 @@ class Snakes(Environment):
         # Used later to place food.
         l = list(range(self.size))
         self.coord = [(x, y) for x in l for y in l]
-
-    @torch.no_grad()
-    def is_finished(self) -> tuple[bool, int]:
-        """Checks if game is finished.
-
-        Returns:
-            Tuple with boolean indicating if game
-            is finished (True if game is finished, False otherwise)
-        """
-        raise NotImplementedError()
 
     def _index_to_coordinate(self, index: int) -> tuple[int, int]:
         """Converts a flat index into a coordinate tuple.
@@ -181,7 +167,7 @@ class Snakes(Environment):
 
         return events 
 
-    def is_outside(self, x: int, y: int) -> bool:
+    def _is_outside(self, x: int, y: int) -> bool:
         """Checks for collision with wall.
 
         Args:
@@ -197,7 +183,7 @@ class Snakes(Environment):
             return True
         return False
 
-    def is_overlap(self, x: int, y: int) -> bool:
+    def _is_overlap(self, x: int, y: int) -> bool:
         """Checks for collision with body.
 
         Args:
@@ -207,11 +193,21 @@ class Snakes(Environment):
         Returns:
             True if snake collides with body. False otherwise.
         """
-        if (x, y) in set(self.pos_q):
+        if (x, y) in set(self.pos_q): # TODO: Check this.
             # if (x, y) == self.pos_q[0]:  # Allow 'collision' with tail.
             #     return False
             return True
         return False
+
+    @torch.no_grad()
+    def _is_finished(self) -> tuple[bool, int]:
+        """Checks if game is finished.
+
+        Returns:
+            Tuple with boolean indicating if game
+            is finished (True if game is finished, False otherwise)
+        """
+        raise NotImplementedError()
 
     def step(self, action: int) -> tuple:
         """Performs a single game move for agent.
@@ -240,7 +236,7 @@ class Snakes(Environment):
         # allow_growth = True
 
         # Check for collisions.
-        if self.is_outside(x, y) or self.is_overlap(x, y):
+        if self._is_outside(x, y) or self._is_overlap(x, y):
             reward = -1.0
             done = True
         else:
@@ -297,11 +293,13 @@ class Snakes(Environment):
         print("\nGame started.\n")
         print(f"Use 'WASD' keys to move. Press 'q' to quit.")
 
+        self._init_render()
+
         done = False
         state = self.reset()
         print(self)
-        if self.is_render:
-            self._render()
+
+        self._render()
 
         while not done:
 
@@ -331,8 +329,34 @@ class Snakes(Environment):
             else:
                 print(f"Invalid input. Use 'WASD' keys to move.")
 
-            if self.is_render:
-                self._render()
+            self._render()
+
+    def play_agent(self, model: torch.nn.Module) -> None:
+        """Runs game with model."""
+
+        self._init_render()
+        state = self.reset()
+        self._render()
+
+        done = False
+
+        while not done:
+
+            time.sleep(0.5)
+
+            action = model.predict(state)
+            state, reward, done = self.step(action=action)
+
+            if self.debug:
+                # print(f"{state = }")
+                print(f"{reward = }")
+                print(f"{done = }")
+
+            if done and reward == -1:
+                print("Illegal move.")
+                exit()
+
+            self._render()
 
     def _init_render(self) -> None:
         self.fig, axis = plt.subplots()
@@ -362,7 +386,7 @@ class Snakes(Environment):
         """Resets the playing flied."""
         self.field = torch.zeros(size=(self.size, self.size))
         state = self.field[None, ...]
-        self.pos_s = set()
+        # self.pos_s = set()
         self.pos_q = collections.deque()
         self._init_agents()
         return state

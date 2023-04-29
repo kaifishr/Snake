@@ -265,7 +265,6 @@ A benefit of deep Q-learning is the possibility of updating the policy's paramet
 
 ## TODO
 
-- Enable training for single snake.
 - Use proportion of length of snake and playing field size as metric.
 - Add option for growth.
 - Add option for encoding.

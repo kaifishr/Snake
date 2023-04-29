@@ -31,6 +31,7 @@ class ResidualBlock(nn.Module):
 
 
 class Model(nn.Module):
+
     def __init__(self, args) -> None:
         """Initializes the model."""
         super().__init__()

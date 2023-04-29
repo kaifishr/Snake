@@ -18,7 +18,7 @@ if __name__ == "__main__":
     args = argument_parser()
     print_args(args=args)
 
-    env = Snakes(size=args.field_size)
+    env = Snakes(args=args)
 
     if args.algorithm == "policy_gradient":
         set_random_seed(seed=args.random_seed)
