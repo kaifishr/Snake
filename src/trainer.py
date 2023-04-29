@@ -23,12 +23,14 @@ def train(env: Environment, agent: Agent, args) -> None:
         # Update network.
         agent.step(events)
 
-        if episode % 50 == 0:  # TODO: Move magic number to arguments.
+        if episode % args.save_stats_every_n_episodes == 0:
             for key, value in agent.stats.items():
                 if value:
                     writer.add_scalar(f"agent/{key}", value, episode)
             print(f"{time.time() - t0:.2}")
 
-    writer.close()
+        if episode % args.save_model_every_n_episodes == 0:
+            save_checkpoint(model=agent.model, args=args)
 
+    writer.close()
     save_checkpoint(model=agent.model, args=args)

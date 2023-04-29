@@ -15,7 +15,7 @@ def set_random_seed(seed: int = 0) -> None:
     torch.manual_seed(seed)
 
 
-def save_checkpoint(model: torch.nn.Module, model_name: str, args) -> None:
+def save_checkpoint(model: torch.nn.Module, args) -> None:
     """Saves model checkpoint.
 
     Uses torch.save() to save PyTorch models.
@@ -25,6 +25,7 @@ def save_checkpoint(model: torch.nn.Module, model_name: str, args) -> None:
         model_name: Name of policy model.
         args: Parsed arguments.
     """
+    model_name = args.model_name
     checkpoint_name = f"{f'{model_name}_{args.algorithm}' if model_name else 'model'}"
     checkpoint_path = "weights"
     dir_path = pathlib.Path(checkpoint_path)

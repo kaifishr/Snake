@@ -167,6 +167,24 @@ def argument_parser() -> argparse.ArgumentParser:
         type=str,
     )
 
+    #######################
+    # Tensorboard / Model #
+    #######################
+    parser.add_argument(
+        "--save-stats-every-n-episodes",
+        dest="save_stats_every_n_episodes",
+        help="Defines how often statistics are saved.",
+        default=100,
+        type=int,
+    )
+
+    parser.add_argument(
+        "--save-model-every-n-episodes",
+        dest="save_model_every_n_episodes",
+        help="Defines how often the model is saved.",
+        default=1000,
+        type=int,
+    )
     # TODO Arguments
     # - allow snakes to grow on / off
     # - colorcode snakes on / off
