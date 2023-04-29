@@ -47,7 +47,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--field-size", 
         dest="field_size", 
-        default=5, 
+        default=3, 
         type=int
     )
 
@@ -127,7 +127,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--batch_size", 
         dest="batch_size", 
-        default=64,
+        default=128,
         type=int
     )
 
@@ -152,7 +152,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--hidden-units", 
         dest="num_hidden_units", 
-        default=256, 
+        default=128, 
         type=int
     )
 

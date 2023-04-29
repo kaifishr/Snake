@@ -27,7 +27,7 @@ class ResidualBlock(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return x + self.mlp_block(x)
+        return x # + self.mlp_block(x)
 
 
 class Model(nn.Module):

@@ -27,7 +27,7 @@ def train(env: Environment, agent: Agent, args) -> None:
             for key, value in agent.stats.items():
                 if value:
                     writer.add_scalar(f"agent/{key}", value, episode)
-            print(f"{time.time() - t0:.2}")
+            # print(f"{time.time() - t0:.2}")
 
         if episode % args.save_model_every_n == 0:
             save_checkpoint(model=agent.model, args=args)
