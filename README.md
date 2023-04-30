@@ -265,7 +265,7 @@ A benefit of deep Q-learning is the possibility of updating the policy's paramet
 
 ## TODO
 
-- Use proportion of length of snake and playing field size as metric.
+- Debug Policy Gradients.
 - Add option for growth.
 - Add option for encoding.
 - Implement adaptive epsilon decay rate for deep q-learning.
