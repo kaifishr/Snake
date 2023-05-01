@@ -80,7 +80,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-episodes", 
         dest="num_episodes", 
-        default=2_000_000, 
+        default=200_000, 
         type=int
     )
 
@@ -112,7 +112,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--decay-rate",
         dest="decay_rate",
         help="Decay rate for epsilon-greedy value.",
-        default=0.999999,
+        default=0.99999,
         type=float,
     )
 
