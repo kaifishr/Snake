@@ -19,16 +19,16 @@ def train(env: Environment, agent: Agent, args) -> None:
 
         # Run episode and let the agents compete.
         events = env.run_episode(agent)
-        for key, value in events.items():
-            print(key)
-            for item in value:
-                print(item)
-            print()
-            # TODOs
-            # 1) Initial state not part of events.
-            # 2) Final state not correctly represented.
-            # 3) 'new_states' identical to 'states'
-        exit()
+        # for key, value in events.items():
+        #     print(key)
+        #     for item in value:
+        #         print(item)
+        #     print()
+        #     # TODOs
+        #     # 1) Initial state not part of events.
+        #     # 2) Final state not correctly represented.
+        #     # 3) 'new_states' identical to 'states'
+        # exit()
 
         # Update network.
         agent.step(events)

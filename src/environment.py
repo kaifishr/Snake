@@ -145,7 +145,8 @@ class Snakes(Environment):
             Tuple for each agent holding states, actions, rewards,
             new_states, and dones of the episode played.
         """
-        state = self.reset()
+        state = self.reset()    # TODO: 'state' is reference to 'self.field'.
+                                # TODO: Check if same bug is also in TicTacToe project.
 
         events = {
             "states": [], 
@@ -157,10 +158,12 @@ class Snakes(Environment):
         done = False
 
         while not done:
+
+            events["states"].append(copy.deepcopy(state))
+
             action = agent.get_action(state)
             new_state, reward, done = self.step(action=action)
 
-            events["states"].append(copy.deepcopy(state))
             events["actions"].append(action)
             events["rewards"].append(reward)
             events["new_states"].append(copy.deepcopy(new_state))
@@ -267,7 +270,7 @@ class Snakes(Environment):
             for i, (x, y) in enumerate(self.pos_q):
                 self.field[y, x] = encoding[i]
 
-        state = self.field.float()[None, ...]
+        state = self.field[None, ...]
 
         return state, reward, done
 
@@ -369,9 +372,9 @@ class Snakes(Environment):
     def reset(self) -> torch.Tensor:
         """Resets the playing flied."""
         self.field = torch.zeros(size=(self.size, self.size))
-        state = self.field[None, ...]
         self.pos_q = collections.deque()
         self._init_agents()
+        state = self.field[None, ...]
         return state
 
     def __repr__(self) -> str:
