@@ -171,96 +171,9 @@ Instead of updating the agent's policy at every time step, a common approach is 
 During an episode, the agent takes actions according to its current policy and collects the rewards. We then use this information to update the policy's parameters and start a new episode.
 
 
-### Self-play
+### Multi-agent Reinforcement Learning
 
-This framework allows agents to be trained using a self-play training strategy. Instead of an algorithmic player as an opponent, we train two agents at the same time and let them compete against each other. 
-
-Alternatively, we can train an agent several episodes until it beats a weaker version of itself a certain number of times. We then make the trained agent the new opponent and start over again. 
-
-To ensure that agents generalize well, for the approaches described above, it is generally a good idea to work with an ensemble of opponent agents that are sampled at random to compete against each other.
-
-
-### Policy Gradient
-
-The agent's interactions with the environment over the course of one episode can be considered the unrolling of a computational graph. However, parts of this graph are not differentiable, such as the sampling of actions or the environment, as the environment's underlying computational processes might be unknown.
-
-The Policy Gradient reinforcement learning algorithm ignores the problem of credit assignment as it focuses on the overall performance of the agent's policy after running one episode. 
-
-If an episode ends with a positive (negative) total reward, it is expected that, on average, actions associated with a positive (negative) reward occurred more often during the episode. 
-
-In practice, we unroll an episode and compute the discounted rewards to derive the error signal, for each step taken during the episode, which is then used for the policy gradient descent.
-
-Let's look at the math behind policy gradients. Let $a$ be a single action that was taken during an episode rollout and $r$ the final reward of that episode.
-
-As the policy network (resembles a probability density function / produces probabilities) from which we sample actions, the final reward $r$ can be considered a random variable (whose realization is a probabilistic value). Hence, for identical initial states, the decision process and therefore the final reward might look totally different.
-
-The expected total reward $\mathbb{E}[r(a)]$ is therefore what we want to maximize. In the discrete case, the expected value of the reward is defined as
-
-$$
-\mathbb{E}[r(a)] = \sum_{a} p(a) r(a)
-$$
-
-where $p(a)$ is the probability of the policy network for action $a$. As we want to maximize the total reward, we take the derivative of the expected reward with respect to the policy network's parameters to derive the main equation in Policy Gradient:
-
-$$
-\begin{aligned}
-\nabla_{\theta} \mathbb{E}[r(a)] 
-&= \nabla_{\theta} \sum_{a} p(a | \theta) r(a)\\
-&= \sum_{a} \nabla_{\theta} p(a | \theta) r(a)\\
-&= \sum_{a} p(a | \theta) \nabla_{\theta} \log (p(a | \theta)) r(a)\\
-&= \mathbb{E} [\nabla_{\theta} \log (p(a | \theta)) r(a)]
-\end{aligned}
-$$
-
-where we compute the expression $\nabla_{\theta} \log (p(a | \theta))$ using backpropagation.
-
-As an aside, the above derivation uses the log-derivative trick. The derivative of function $y = \log (f(x))$ is $\frac{\partial}{\partial x} y = \frac{1}{f(x)} \frac{\partial}{\partial x} f(x)$. Therefore we can write $f(x) \frac{\partial} {\partial x} \log (f(x)) = \frac{\partial} {\partial x} f(x)$. Applying this to the derivative of the probability for action $a$ we get $\nabla_{\theta} p(a | \theta) = \sum_{a} p(a | \theta) \nabla_{\theta} \log (p(a | \theta))$. Aside end.
-
-The derived expectation can be approximated by averaging $T$ samples by dropping the expectation operator altogether.
-
-$$
-\begin{aligned}
-\nabla_{\theta} \mathbb{E}[r(a)] 
-&= \mathbb{E} [\nabla_{\theta} \log (p(a | \theta)) r(a)]\\
-&= \frac{1}{T} \sum_{t} \nabla_{\theta} \log (p(a_{t} | \theta)) r(a_{t})]
-\end{aligned}
-$$
-
-It should be noted that the gradient estimates are unbiased but high in variance. To reduce the variance, other methods such as [control variates](https://en.wikipedia.org/wiki/Control_variates) or [actor critic](http://rail.eecs.berkeley.edu/deeprlcourse-fa17/f17docs/lecture_5_actor_critic_pdf).
-
-
-### Deep Q-Learning
-
-The goal of deep Q-learning is to learn the Q-function represented by a deep neural network. 
-
-For discrete action spaces with $n_{a}$ available actions to choose from ($n_{a} = 9$ actions for Snakes), the Q-function maps a state $s$ to $n_{a}$ outputs predicting the Q-values $Q(s, a)$ for each action. This is in contrast to policy gradients, where the policy-network's output represents a probability distribution over a discrete action space. The policy $\pi$ determining the action to take in state $s$, is given by the index associated with the network's maximally activated output neuron.
-
-If the network represents the true Q-function, then it satisfies the Bellman equation
-
-$$Q(s,a) = r(s,a) + \gamma \mathbb{E}[Q(s', \pi(s'))]$$
-
-with policy $\pi$ representing the action that maximizes the expected reward starting with state $s$
-
-$$\pi = \text{argmax}_{a} Q(s, a)$$
-
-As the randomly initialized neural network modeling the Q-function is far from representing the true Q-function, it does not satisfy the Bellman equation, and thus a [temporal difference error](https://en.wikipedia.org/wiki/Temporal_difference_learning) $\epsilon$ exists
-
-$$\epsilon = r(s,a) + \gamma \mathbb{E}[Q(s', \pi(s'))] - Q(s,a)$$
-
-The objective is to learn the parameters of the neural network representing the Q-function by minimizing the temporal difference error over the entire trajectory using the mean squared error
-
-$$MSE = \frac{1}{2} \sum_{t=1}^{T} \epsilon_{t}^{2}$$
-
-The Q-function considered here represents a deterministic policy. A deterministic policy results in always performing the same actions given a fixed initial state, preventing exploration. To allow for some exploration, the selection of an action should contain some randomness, using, for example, epsilon-greedy sampling for a non-deterministic trajectory.
-
-Another difference to policy gradients is that Q-learning separates exploration used to learn the Q-function from exploitation of the Q-function once learning is finished. In contrast, policy gradients follow the current policy.
-
-A benefit of deep Q-learning is the possibility of updating the policy's parameters directly after each step (taking an action and observing the reward). This is in contrast to policy gradients, where the events of the decision process (states, actions, and rewards) are recorded for an entire episode and the final reward has been observed before the policy update can be performed.
-
-
-## References
-
-* [A Crash Course on Reinforcement Learning](https://arxiv.org/abs/2103.04910)
+This framework allows several agents to be trained at the same time and let them compete against each other. To ensure that the agents generalize well, it is generally a good idea to work with an ensemble of opponent agents that are sampled at random to compete against each other.
 
 
 ## TODO

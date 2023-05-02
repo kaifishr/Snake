@@ -63,8 +63,22 @@ def argument_parser() -> argparse.ArgumentParser:
         "--render",
         dest="render",
         default=False,
-        type=str
+        type=bool
     )
+
+    # parser.add_argument(
+    #     "--grow",
+    #     dest="grow",
+    #     default=True,
+    #     type=bool
+    # )
+
+    # parser.add_argument(
+    #     "--encode-length",
+    #     dest="encode_length",
+    #     default=True,
+    #     type=bool
+    # )
 
     ###########
     # Trainer #
@@ -182,8 +196,5 @@ def argument_parser() -> argparse.ArgumentParser:
         default=1000,
         type=int,
     )
-    # TODO Arguments
-    # - allow snakes to grow on / off
-    # - colorcode snakes on / off
 
     return parser.parse_args()
