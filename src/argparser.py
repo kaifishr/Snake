@@ -102,7 +102,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--gamma",
         dest="gamma",
         help="Discount or forgetting factor. 0 <= gamma <= 1.",
-        default=1.0,
+        default=0.95,
         type=float,
     )
 
