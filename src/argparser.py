@@ -47,7 +47,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--field-size", 
         dest="field_size", 
-        default=3, 
+        default=5, 
         type=int
     )
 
