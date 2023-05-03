@@ -329,15 +329,16 @@ class Snakes(Environment):
 
         while not done:
 
-            time.sleep(0.5)
+            time.sleep(0.1)  # TODO: Make this a parameter.
 
             action = model.predict(state)
             state, reward, done = self.step(action=action)
 
             if self.debug:
+                print(f"{action = }")
                 # print(f"{state = }")
                 print(f"{reward = }")
-                print(f"{done = }")
+                print(f"{done = }\n")
 
             if done and reward == -1:
                 print("Illegal move.")

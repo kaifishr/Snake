@@ -87,14 +87,14 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--learning-rate", 
         dest="learning_rate", 
-        default=1e-4, 
+        default=4e-4, 
         type=float
     )
 
     parser.add_argument(
         "--num-episodes", 
         dest="num_episodes", 
-        default=200_000, 
+        default=500_000, 
         type=int
     )
 
@@ -126,7 +126,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--decay-rate",
         dest="decay_rate",
         help="Decay rate for epsilon-greedy value.",
-        default=0.99999,
+        default=0.999992,
         type=float,
     )
 
@@ -134,7 +134,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--memory-size",
         dest="memory_size",
         help="Replay memory size. Set to 1 for no memory.",
-        default=10_000,
+        default=20_000,
         type=int,
     )
 
