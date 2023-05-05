@@ -94,7 +94,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-episodes", 
         dest="num_episodes", 
-        default=500_000, 
+        default=1_000_000, 
         type=int
     )
 
@@ -102,7 +102,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--gamma",
         dest="gamma",
         help="Discount or forgetting factor. 0 <= gamma <= 1.",
-        default=0.95,
+        default=0.9,
         type=float,
     )
 
@@ -126,7 +126,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--decay-rate",
         dest="decay_rate",
         help="Decay rate for epsilon-greedy value.",
-        default=0.999992,
+        default=0.999995,
         type=float,
     )
 
@@ -134,20 +134,28 @@ def argument_parser() -> argparse.ArgumentParser:
         "--memory-size",
         dest="memory_size",
         help="Replay memory size. Set to 1 for no memory.",
-        default=20_000,
+        default=10_000,
         type=int,
     )
 
     parser.add_argument(
         "--batch_size", 
         dest="batch_size", 
-        default=128,
+        default=256,
         type=int
     )
 
     #############################
     # Model / policy parameters #
     #############################
+
+    parser.add_argument(
+        "--model-name",
+        dest="model_name",
+        help="Defines which model to load.",
+        default=None,
+        type=str,
+    )
 
     parser.add_argument(
         "--dropout-probability",
@@ -159,7 +167,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-layers", 
         dest="num_layers", 
-        default=1,
+        default=2,
         type=int
     )
 
@@ -168,14 +176,6 @@ def argument_parser() -> argparse.ArgumentParser:
         dest="num_hidden_units", 
         default=128, 
         type=int
-    )
-
-    parser.add_argument(
-        "--model-name",
-        dest="model_name",
-        help="Defines which model to load.",
-        default=None,
-        type=str,
     )
 
     #######################
@@ -193,7 +193,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--save-model-every-n",
         dest="save_model_every_n",
         help="Defines how often the model is saved.",
-        default=1000,
+        default=5000,
         type=int,
     )
 
