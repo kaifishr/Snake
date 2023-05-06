@@ -47,7 +47,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--field-size", 
         dest="field_size", 
-        default=5, 
+        default=4, 
         type=int
     )
 
@@ -94,7 +94,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-episodes", 
         dest="num_episodes", 
-        default=1_000_000, 
+        default=500_000, 
         type=int
     )
 
@@ -126,7 +126,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--decay-rate",
         dest="decay_rate",
         help="Decay rate for epsilon-greedy value.",
-        default=0.999995,
+        default=0.999994,
         type=float,
     )
 
@@ -134,7 +134,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--memory-size",
         dest="memory_size",
         help="Replay memory size. Set to 1 for no memory.",
-        default=10_000,
+        default=20_000,
         type=int,
     )
 
@@ -148,7 +148,6 @@ def argument_parser() -> argparse.ArgumentParser:
     #############################
     # Model / policy parameters #
     #############################
-
     parser.add_argument(
         "--model-name",
         dest="model_name",

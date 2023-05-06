@@ -27,7 +27,7 @@ class ResidualBlock(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return x # + self.mlp_block(x)
+        return x + self.mlp_block(x)
 
 
 class Model(nn.Module):
@@ -45,6 +45,7 @@ class Model(nn.Module):
 
         input_layer = [
             nn.Flatten(start_dim=1),
+            nn.LayerNorm(dims_state),
             nn.Linear(in_features=dims_state, out_features=hidden_features),
             nn.GELU(),
             nn.Dropout(p=prob_dropout),
