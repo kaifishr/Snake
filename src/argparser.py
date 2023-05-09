@@ -47,7 +47,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--field-size", 
         dest="field_size", 
-        default=4, 
+        default=8, 
         type=int
     )
 
@@ -66,12 +66,11 @@ def argument_parser() -> argparse.ArgumentParser:
         type=bool
     )
 
-    # parser.add_argument(
-    #     "--grow",
-    #     dest="grow",
-    #     default=True,
-    #     type=bool
-    # )
+    parser.add_argument(
+        "--forbid-growth",
+        action="store_true",
+        dest="forbid_growth",
+    )
 
     # parser.add_argument(
     #     "--encode-length",
@@ -87,14 +86,14 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--learning-rate", 
         dest="learning_rate", 
-        default=4e-4, 
+        default=2e-4, 
         type=float
     )
 
     parser.add_argument(
         "--num-episodes", 
         dest="num_episodes", 
-        default=500_000, 
+        default=1_000_000, 
         type=int
     )
 
@@ -102,7 +101,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--gamma",
         dest="gamma",
         help="Discount or forgetting factor. 0 <= gamma <= 1.",
-        default=0.9,
+        default=0.95,
         type=float,
     )
 
@@ -126,7 +125,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--decay-rate",
         dest="decay_rate",
         help="Decay rate for epsilon-greedy value.",
-        default=0.999994,
+        default=0.999995,
         type=float,
     )
 
@@ -134,14 +133,14 @@ def argument_parser() -> argparse.ArgumentParser:
         "--memory-size",
         dest="memory_size",
         help="Replay memory size. Set to 1 for no memory.",
-        default=20_000,
+        default=40_000,
         type=int,
     )
 
     parser.add_argument(
         "--batch_size", 
         dest="batch_size", 
-        default=256,
+        default=32,
         type=int
     )
 
@@ -166,7 +165,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-layers", 
         dest="num_layers", 
-        default=2,
+        default=1,
         type=int
     )
 

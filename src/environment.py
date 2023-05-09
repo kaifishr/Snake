@@ -88,7 +88,9 @@ class Snakes(Environment):
         """Initializes a square playing field."""
         super().__init__()
 
+        self.forbid_growth = args.forbid_growth
         self.size= args.field_size
+
         self.field = torch.zeros(size=(self.size, self.size))
 
         # Keep track of snake's position. 
@@ -96,12 +98,13 @@ class Snakes(Environment):
         self.coord = None  # Holds coordiante tuples of playing field.
 
         # Lookup table to map actions to moves.
+        # TODO: Use east, west, south, and north instead of 0, 1, 2, 3?
         self.action_to_move = {0: (1, 0), 1: (0, -1), 2: (-1, 0), 3: (0, 1)}
+        # TODO: Move this to a render class?
         self.key_to_action = {"w": 1, "a": 2, "s": 3, "d": 0}
 
     def _init_agents(self) -> None:
         """Initializes position of agents.
-
         TODO: Add random non-overlapping initial positions.
         """
         # Create list of all playing field coordinates.
@@ -243,14 +246,20 @@ class Snakes(Environment):
                 # Snake moves and grows.
                 self.pos_q.append((x, y))
                 # Update playing field.
+                # Fast update without color encoding.
                 # x_head, y_head = self.pos_q[-1]
                 # self.field[y_head, x_head] = 1
+                if self.forbid_growth:
+                    x_tail, y_tail = self.pos_q[0]
+                    self.field[y_tail, x_tail] = 0
+                    self.pos_q.popleft()
 
                 # Add new food.
                 done = self._add_food()
             else:
                 # No food found yields no reward.
-                reward = 0.0
+                # TODO: Negative reward to enforce shortest path to food?
+                reward = -0.1
                 done = False
 
                 # Register snake's head.
@@ -266,7 +275,8 @@ class Snakes(Environment):
                 self.pos_q.popleft()
 
             # Encodes snake's body in playing field.
-            encoding = torch.linspace(start=1.0, end=2.0, steps=len(self.pos_q))
+            start, end = 1.0, 2.0
+            encoding = torch.linspace(start=start, end=end, steps=len(self.pos_q))
             for i, (x, y) in enumerate(self.pos_q):
                 self.field[y, x] = encoding[i]
 
