@@ -275,7 +275,7 @@ class Snakes(Environment):
                 self.pos_q.popleft()
 
             # Encodes snake's body in playing field.
-            encoding = torch.linspace(start=0.5, end=1.0, steps=len(self.pos_q))
+            encoding = torch.linspace(start=1.0, end=2.0, steps=len(self.pos_q))
             for i, (x, y) in enumerate(self.pos_q):
                 self.field[y, x] = encoding[i]
 
