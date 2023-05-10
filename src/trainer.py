@@ -3,15 +3,18 @@ import time
 
 from torch.utils.tensorboard import SummaryWriter
 
+from src.utils import save_config
 from src.utils import save_checkpoint
 from src.environment import Environment
 from src.agent import Agent
+
 
 
 def train(env: Environment, agent: Agent, args) -> None:
     """Trains agents with selected reinforcement algorithm."""
 
     writer = SummaryWriter()
+    save_config(writer=writer, args=args)
 
     for episode in range(args.num_episodes):
 

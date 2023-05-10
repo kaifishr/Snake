@@ -6,6 +6,7 @@ import random
 
 import numpy
 import torch
+from torch.utils.tensorboard import SummaryWriter
 
 
 def set_random_seed(seed: int = 0) -> None:
@@ -94,3 +95,20 @@ def eval(function: callable) -> callable:
         return out
 
     return eval_wrapper
+
+
+def save_config(
+        writer: SummaryWriter, args, file_name: str = None) -> None:
+    """Saves config in runs folder.
+
+    Args:
+        writer: Summary writer class.
+        args: Arguments from argparse.
+    """
+    file_name = file_name if file_name else "config.txt"
+    file_path = pathlib.Path(writer.log_dir) / file_name 
+    representation = "{k:.<32}{v}"
+    with open(file_path, "w") as file:
+        for key, value in vars(args).items():
+            file.write(representation.format(k=key, v=value))
+            file.write('\n')
