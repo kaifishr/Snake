@@ -19,6 +19,4 @@ if __name__ == "__main__":
         env = Snakes(args=args)
         env.play()
     else:
-        raise NotImplementedError(
-            f"Mode '{args.mode}' not implemented."
-        )
+        raise NotImplementedError(f"Mode '{args.mode}' not implemented.")

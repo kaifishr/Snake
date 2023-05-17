@@ -97,8 +97,7 @@ def eval(function: callable) -> callable:
     return eval_wrapper
 
 
-def save_config(
-        writer: SummaryWriter, args, file_name: str = None) -> None:
+def save_config(writer: SummaryWriter, args, file_name: str = None) -> None:
     """Saves config in runs folder.
 
     Args:
@@ -106,9 +105,9 @@ def save_config(
         args: Arguments from argparse.
     """
     file_name = file_name if file_name else "config.txt"
-    file_path = pathlib.Path(writer.log_dir) / file_name 
+    file_path = pathlib.Path(writer.log_dir) / file_name
     representation = "{k:.<32}{v}"
     with open(file_path, "w") as file:
         for key, value in vars(args).items():
             file.write(representation.format(k=key, v=value))
-            file.write('\n')
+            file.write("\n")

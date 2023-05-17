@@ -9,7 +9,6 @@ from src.environment import Environment
 from src.agent import Agent
 
 
-
 def train(env: Environment, agent: Agent, args) -> None:
     """Trains agents with selected reinforcement algorithm."""
 
@@ -17,7 +16,6 @@ def train(env: Environment, agent: Agent, args) -> None:
     save_config(writer=writer, args=args)
 
     for episode in range(args.num_episodes):
-
         t0 = time.time()
 
         events = env.run_episode(agent)

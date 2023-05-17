@@ -89,11 +89,11 @@ class Snakes(Environment):
         super().__init__()
 
         self.forbid_growth = args.forbid_growth
-        self.size= args.field_size
+        self.size = args.field_size
 
         self.field = torch.zeros(size=(self.size, self.size))
 
-        # Keep track of snake's position. 
+        # Keep track of snake's position.
         self.pos_q = None
         self.coord = None  # Holds coordiante tuples of playing field.
 
@@ -148,20 +148,19 @@ class Snakes(Environment):
             Tuple for each agent holding states, actions, rewards,
             new_states, and dones of the episode played.
         """
-        state = self.reset()    # TODO: 'state' is reference to 'self.field'.
-                                # TODO: Check if same bug is also in TicTacToe project.
+        state = self.reset()  # TODO: 'state' is reference to 'self.field'.
+        # TODO: Check if same bug is also in TicTacToe project.
 
         events = {
-            "states": [], 
-            "actions": [], 
-            "rewards": [], 
-            "new_states": [], 
-            "dones": []
+            "states": [],
+            "actions": [],
+            "rewards": [],
+            "new_states": [],
+            "dones": [],
         }
         done = False
 
         while not done:
-
             events["states"].append(copy.deepcopy(state))
 
             action = agent.get_action(state)
@@ -174,7 +173,7 @@ class Snakes(Environment):
 
             state = new_state
 
-        return events 
+        return events
 
     def _is_outside(self, x: int, y: int) -> bool:
         """Checks for collision with wall.
@@ -202,7 +201,7 @@ class Snakes(Environment):
         Returns:
             True if snake collides with body. False otherwise.
         """
-        if (x, y) in set(self.pos_q): # TODO: Check this.
+        if (x, y) in set(self.pos_q):  # TODO: Check this.
             # if (x, y) == self.pos_q[0]:  # Allow 'collision' with tail.
             #     return False
             return True
@@ -298,14 +297,12 @@ class Snakes(Environment):
         self._render()
 
         while not done:
-
             key = input("Enter command: ")
 
             if key == "q":
                 exit("Game quit.")
 
             elif key in self.key_to_action:
-
                 action = self.key_to_action[key]
                 state, reward, done = self.step(action=action)
                 print(self)
@@ -337,7 +334,6 @@ class Snakes(Environment):
         done = False
 
         while not done:
-
             time.sleep(0.1)  # TODO: Make this a parameter.
 
             action = model.predict(state)
@@ -360,9 +356,15 @@ class Snakes(Environment):
         self.fig.canvas.manager.set_window_title("Snakes")
         field = self.field.numpy()
         extent = (0, field.shape[1], field.shape[0], 0)
-        self.img = axis.imshow(field, vmin=-1.0, vmax=2.0, cmap="bwr", 
-                               interpolation='none', aspect='equal', 
-                               extent=extent)
+        self.img = axis.imshow(
+            field,
+            vmin=-1.0,
+            vmax=2.0,
+            cmap="bwr",
+            interpolation="none",
+            aspect="equal",
+            extent=extent,
+        )
         axis.grid(color="k", linewidth=1)
         self.fig.canvas.draw()
         plt.show(block=False)

@@ -49,7 +49,7 @@ class Agent:
         Useful for debugging.
 
         Args:
-            events: Tuple holding states, actions, rewards, new states, 
+            events: Tuple holding states, actions, rewards, new states,
             and termination token.
         """
         for key, value in events.items():

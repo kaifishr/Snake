@@ -31,6 +31,7 @@ class ResidualBlock(nn.Module):
 
 
 class Model(nn.Module):
+    num_actions = 4
 
     def __init__(self, args) -> None:
         """Initializes the model."""
@@ -38,7 +39,6 @@ class Model(nn.Module):
 
         field_size = args.field_size
         dims_state = field_size**2
-        num_actions = 4
         hidden_features = args.num_hidden_units
         num_layers = args.num_layers
         prob_dropout = args.dropout_probability
@@ -59,7 +59,7 @@ class Model(nn.Module):
         ]
 
         output_layer = [
-            nn.Linear(in_features=hidden_features, out_features=num_actions),
+            nn.Linear(in_features=hidden_features, out_features=self.num_actions),
             nn.Softmax(dim=-1)
             if args.algorithm == "policy_gradient"
             else nn.Identity(),
