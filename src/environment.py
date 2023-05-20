@@ -82,15 +82,24 @@ class Snakes(Environment):
         size: Size of playing field.
         num_agents: Number of competing agents.
         field: PyTorch tensor representing playing field.
+        pos_q:
+        coord:
+        action_to_move:
+        key_to_action:
+        max_steps_episode:
+        step_counter:
     """
 
     def __init__(self, args) -> None:
-        """Initializes a square playing field."""
+        """Initializes a square playing field.
+        
+        Args:
+            args: Command line arguments.
+        """
         super().__init__()
 
         self.forbid_growth = args.forbid_growth
         self.size = args.field_size
-
         self.field = torch.zeros(size=(self.size, self.size))
 
         # Keep track of snake's position.
@@ -102,6 +111,9 @@ class Snakes(Environment):
         self.action_to_move = {0: (1, 0), 1: (0, -1), 2: (-1, 0), 3: (0, 1)}
         # TODO: Move this to a render class?
         self.key_to_action = {"w": 1, "a": 2, "s": 3, "d": 0}
+
+        self.max_steps_episode = 2 * self.size * self.size
+        self.step_counter = 0
 
     def _init_agents(self) -> None:
         """Initializes position of agents.
@@ -148,7 +160,7 @@ class Snakes(Environment):
             Tuple for each agent holding states, actions, rewards,
             new_states, and dones of the episode played.
         """
-        state = self.reset()  # TODO: 'state' is reference to 'self.field'.
+        state = self._reset()  # TODO: 'state' is reference to 'self.field'.
         # TODO: Check if same bug is also in TicTacToe project.
 
         events = {
@@ -222,6 +234,8 @@ class Snakes(Environment):
             A tuple holding state (matrix), reward (scalar),
             and done (bool) indicating if game is finished.
         """
+        self.step_counter += 1
+
         # Get head coordinates.
         x, y = self.pos_q[-1]
 
@@ -230,11 +244,13 @@ class Snakes(Environment):
         x += dx
         y += dy
 
-        # Allows to turn growth on / off.
-        # allow_growth = True
-
-        # Check for collisions.
-        if self._is_outside(x, y) or self._is_overlap(x, y):
+        if self.step_counter == self.max_steps_episode:
+            # print("Maximum steps exceeded.")
+            reward = -1.0
+            done = True
+        elif self._is_outside(x, y) or self._is_overlap(x, y):
+            # Negative reward and end of game in case of collisions with body, 
+            # other agents or if snake hits the playing field boundary.
             reward = -1.0
             done = True
         else:
@@ -256,9 +272,9 @@ class Snakes(Environment):
                 # Add new food.
                 done = self._add_food()
             else:
-                # No food found yields no reward.
-                # TODO: Negative reward to enforce shortest path to food?
-                reward = -0.05
+                # No food found yields negative reward to encourage agent
+                # not to dawdling too much.
+                reward = - 1.0 / (self.size * self.size)
                 done = False
 
                 # Register snake's head.
@@ -291,7 +307,7 @@ class Snakes(Environment):
         self._init_render()
 
         done = False
-        state = self.reset()
+        state = self._reset()
         print(self)
 
         self._render()
@@ -328,7 +344,7 @@ class Snakes(Environment):
         """Runs game with model."""
 
         self._init_render()
-        state = self.reset()
+        state = self._reset()
         self._render()
 
         done = False
@@ -381,12 +397,22 @@ class Snakes(Environment):
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
 
-    def reset(self) -> torch.Tensor:
-        """Resets the playing flied."""
+    def _reset(self) -> torch.Tensor:
+        """Resets the environment.
+        
+        Returns:
+            Tensor holding state.
+        """
+        # Reset playing field.
         self.field = torch.zeros(size=(self.size, self.size))
+        # Reset snake.
         self.pos_q = collections.deque()
+        # Initialize new agents.
         self._init_agents()
+
         state = self.field[None, ...]
+        self.step_counter = 0
+
         return state
 
     def __repr__(self) -> str:

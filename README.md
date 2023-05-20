@@ -169,10 +169,8 @@ This framework allows several agents to be trained at the same time and let them
 
 ## TODO
 
-- Set maximum steps per episode to avoid infinite loops.
-    - max_steps = field_size ** 2
 - Debug Policy Gradients.
-- Add option for encoding.
+- Make encoding optional.
 - Implement adaptive epsilon decay rate for deep q-learning.
 - Add Boltzmann exploration and epsilon-greedy sampling.
 

@@ -63,7 +63,7 @@ def argument_parser() -> argparse.ArgumentParser:
     ###########
 
     parser.add_argument(
-        "--learning-rate", dest="learning_rate", default=2e-5, type=float
+        "--learning-rate", dest="learning_rate", default=2e-4, type=float
     )
 
     parser.add_argument(
