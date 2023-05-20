@@ -258,7 +258,7 @@ class Snakes(Environment):
             else:
                 # No food found yields no reward.
                 # TODO: Negative reward to enforce shortest path to food?
-                reward = -0.1
+                reward = -0.05
                 done = False
 
                 # Register snake's head.

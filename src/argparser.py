@@ -63,18 +63,18 @@ def argument_parser() -> argparse.ArgumentParser:
     ###########
 
     parser.add_argument(
-        "--learning-rate", dest="learning_rate", default=1e-5, type=float
+        "--learning-rate", dest="learning_rate", default=2e-5, type=float
     )
 
     parser.add_argument(
-        "--num-episodes", dest="num_episodes", default=1_000_000, type=int
+        "--num-episodes", dest="num_episodes", default=2_000_000, type=int
     )
 
     parser.add_argument(
         "--gamma",
         dest="gamma",
         help="Discount or forgetting factor. 0 <= gamma <= 1.",
-        default=0.95,
+        default=0.9,
         type=float,
     )
 
