@@ -63,7 +63,7 @@ def argument_parser() -> argparse.ArgumentParser:
     ###########
 
     parser.add_argument(
-        "--learning-rate", dest="learning_rate", default=1e-4, type=float
+        "--learning-rate", dest="learning_rate", default=1e-5, type=float
     )
 
     parser.add_argument(
@@ -130,10 +130,18 @@ def argument_parser() -> argparse.ArgumentParser:
         type=float,
     )
 
-    parser.add_argument("--num-layers", dest="num_layers", default=1, type=int)
+    parser.add_argument(
+        "--num-layers", 
+        dest="num_layers", 
+        default=1, 
+        type=int
+    )
 
     parser.add_argument(
-        "--hidden-units", dest="num_hidden_units", default=1024, type=int
+        "--hidden-units", 
+        dest="num_hidden_units", 
+        default=256, 
+        type=int
     )
 
     #######################
