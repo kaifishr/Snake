@@ -40,15 +40,6 @@ python play.py -a deep_q_learning -mn agent_a
 
 ### Reinforcement Learning
 
-<p align="center">
-<img src="https://www.mathworks.com/help/reinforcement-learning/ug/agent_diagram.png" alt="" width="320" height="">
-<figcaption>
-<font size="1">
-mathworks.com/help/reinforcement-learning/ug/agent_diagram.png 
-</font>
-</figcaption>
-</p>
-
 This section is intended to give a *very* brief introduction to some aspects of reinforcement learning and the algorithms, namely [policy gradients](#policy-gradients) and [deep Q-learning](#deep-q-learning), that are used to train agents to play Snakes.
 
 If the learning task that we try to solve cannot be taken offline or reduced to an abstract task like regression or classification, we can formulate it as a reinforcement learning task. In reinforcement learning, agents interact with an uncertain environment, perform actions, and are continually trained to learn how to correctly interact with a dynamic world. The agent consists of the policy network and a reinforcement learning algorithm such as deep Q-learning or policy gradients.
