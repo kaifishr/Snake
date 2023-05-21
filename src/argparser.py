@@ -33,7 +33,7 @@ def argument_parser() -> argparse.ArgumentParser:
     # Environment #
     ###############
 
-    parser.add_argument("--field-size", dest="field_size", default=5, type=int)
+    parser.add_argument("--field-size", dest="field_size", default=8, type=int)
 
     parser.add_argument(
         "--mode",
@@ -63,7 +63,7 @@ def argument_parser() -> argparse.ArgumentParser:
     ###########
 
     parser.add_argument(
-        "--learning-rate", dest="learning_rate", default=2e-4, type=float
+        "--learning-rate", dest="learning_rate", default=2e-6, type=float
     )
 
     parser.add_argument(
@@ -133,14 +133,14 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-layers", 
         dest="num_layers", 
-        default=1, 
+        default=3, 
         type=int
     )
 
     parser.add_argument(
         "--hidden-units", 
         dest="num_hidden_units", 
-        default=256, 
+        default=128, 
         type=int
     )
 

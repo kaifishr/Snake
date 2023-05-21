@@ -169,7 +169,7 @@ This framework allows several agents to be trained at the same time and let them
 
 ## TODO
 
-- Debug Policy Gradients.
+- Allow slow growth.
 - Make encoding optional.
 - Implement adaptive epsilon decay rate for deep q-learning.
 - Add Boltzmann exploration and epsilon-greedy sampling.
