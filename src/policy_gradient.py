@@ -21,6 +21,7 @@ class PolicyGradient(Agent):
         criterion:
 
     """
+    num_actions: int = 4
 
     def __init__(self, model: nn.Module, args) -> None:
         """Initializes class."""
@@ -66,17 +67,18 @@ class PolicyGradient(Agent):
 
         reward_sum = 0.0
         discounted_rewards = []
-
         for reward in rewards[::-1]:
             reward_sum = reward + self.gamma * reward_sum
             discounted_rewards.append(reward_sum)
         discounted_rewards = discounted_rewards[::-1]
-
         discounted_rewards = torch.tensor(discounted_rewards)
         discounted_rewards = self._normalize_rewards(rewards=discounted_rewards)
 
         states = torch.vstack(states)
-        target_actions = F.one_hot(torch.tensor(actions), num_classes=4).float()
+        target_actions = F.one_hot(
+            torch.tensor(actions), 
+            num_classes=self.num_actions
+        ).float()
 
         # https://discuss.pytorch.org/t/per-class-and-per-sample-weighting/25530/3
         self.optimizer.zero_grad()

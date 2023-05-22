@@ -63,6 +63,7 @@ class Snakes(Environment):
         -1 if another agent find the food
         -1 for hitting a wall
         -1 for hitting the own or others agent's body
+        -1 for exceeding maximum number of steps
         0 if game is draw?
 
     # Initial state
@@ -77,6 +78,7 @@ class Snakes(Environment):
     1. The game was lost / won.
     2. Game ends in a draw.
     3. A wrong move was made (forces the agent to learn the game's rules).
+    4. Maximum number of steps has been exceeded.
 
     Attributes:
         size: Size of playing field.
@@ -160,9 +162,6 @@ class Snakes(Environment):
             Tuple for each agent holding states, actions, rewards,
             new_states, and dones of the episode played.
         """
-        state = self._reset()  # TODO: 'state' is reference to 'self.field'.
-        # TODO: Check if same bug is also in TicTacToe project.
-
         events = {
             "states": [],
             "actions": [],
@@ -170,20 +169,19 @@ class Snakes(Environment):
             "new_states": [],
             "dones": [],
         }
-        done = False
-
-        while not done:
-            events["states"].append(copy.deepcopy(state))
-
-            action = agent.get_action(state)
-            new_state, reward, done = self.step(action=action)
-
-            events["actions"].append(action)
-            events["rewards"].append(reward)
-            events["new_states"].append(copy.deepcopy(new_state))
-            events["dones"].append(done)
-
-            state = new_state
+        for _ in range(4):
+            state = self._reset()  # TODO: 'state' is reference to 'self.field'.
+            # TODO: Check if same bug is also in TicTacToe project.
+            done = False
+            while not done:
+                events["states"].append(copy.deepcopy(state))
+                action = agent.get_action(state)
+                new_state, reward, done = self.step(action=action)
+                events["actions"].append(action)
+                events["rewards"].append(reward)
+                events["new_states"].append(copy.deepcopy(new_state))
+                events["dones"].append(done)
+                state = new_state
 
         return events
 
