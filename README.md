@@ -1,10 +1,12 @@
 # Snakes
 
-A minimal environment equipped with reinforcement learning algorithms to train agents to compete in [Snakes](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). Due to its simplicity, this repository is potentially useful for educational purposes and can serve as a starting point to solve more complex scenarios.
+A minimal environment equipped with reinforcement learning algorithms to train agents to compete in [Snakes](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). Due to its simplicity, this repository is potentially useful for educational purposes and can serve as a starting point to solve more complex scenarios and to test reinforcement
+learning algorithms.
 
 ## Installation
 
-To run *Snakes*, install the latest master directly from GitHub. For a basic install, run:
+To run *Snakes*, install the latest master directly from GitHub. For a basic 
+install, run:
 
 ```console
 git clone https://github.com/kaifishr/Snakes
@@ -40,11 +42,22 @@ python play.py -a deep_q_learning -mn agent_a
 
 ### Reinforcement Learning
 
-This section is intended to give a *very* brief introduction to some aspects of reinforcement learning and the algorithms, namely [policy gradients](#policy-gradients) and [deep Q-learning](#deep-q-learning), that are used to train agents to play Snakes.
+The interaction of an agent with an uncertain environment and the selection of
+the right actions to maximize a reward are difficult and sometimes unfeasible 
+to learn by formulating them as an regression or classification task. This is
+where reinforcement learning comes into play to continually train an agent to
+learn how to correctly interact with a dynamic world.
 
-If the learning task that we try to solve cannot be taken offline or reduced to an abstract task like regression or classification, we can formulate it as a reinforcement learning task. In reinforcement learning, agents interact with an uncertain environment, perform actions, and are continually trained to learn how to correctly interact with a dynamic world. The agent consists of the policy network and a reinforcement learning algorithm such as deep Q-learning or policy gradients.
+This repository comes with two basic reinforcement learning algorithms, namely 
+[policy gradients](#policy-gradients) and [deep Q-learning](#deep-q-learning), 
+that are used to train agents to play Snakes. The agent consists of a policy
+network and the reinforcement learning algorithm used to train the network.
 
-More specifically, let's use the game of Snakes as an example. The dynamic world or environment is represented by multiple interacting agents (the snakes). An agent observes a **state** that is represented by the configuration of the playing field. An example state with a single snake looking for food look as follows
+In the game of Snakes, the dynamic world, also referred to as the environment,
+is represented by the playing field and possibly other agents (in this case
+other snakes) looking for food. An agent observes a **state** represented by 
+the current configuration of the playing field. An example state with a single 
+snake looking for food look as follows
 
 $$
 \begin{aligned}
@@ -62,13 +75,28 @@ $$
 
 with $\circ$ and $\times$ representing the snake's body and food, respectively. 
 
-Based on the observed state, the agent performs an **action**. This action causes the environment to transition to a new state. Available actions are the set of allowed moves. Following the action, the environment provides a **reward**. The reward is a scalar value, where higher values are better. The agent's action is based on a **policy**. A policy is a function that maps states (the current observation of the environment) to a probability distribution of the actions to be taken and can be modeled by a neural network whose parameters $\boldsymbol \theta$ are learned.
+Based on the observed state, the agent performs an **action**. This action 
+causes the environment to transition to a new state. In the case of Snakes, the
+available actions is the set of possible movement directions ($\uparrow$, 
+$\downarrow$, $\leftarrow$, $\rightarrow$).
+
+The agent's actions are based on a **policy**, a function that maps states 
+(the current observation of the environment) to a discrete probability 
+distribution of possible actions. This function can be modeled by a neural 
+network whose parameters $\boldsymbol \theta$ are learned.
 
 $$\textbf{action}= \text{policy}(\textbf{state}; \boldsymbol \theta)$$
 
-During the training, the agent interacts with the environment and the selected optimization method, adjusts the agent's policy in order to *maximize the expectation of future rewards*.
+As an aside, it should be noted, that for a given state, the agent's best 
+choice for an action depends only on the current state and may not depend on 
+past states. Considering only the information provided by the current state for 
+the next action is known as a [Markow decision process](https://en.wikipedia.org/wiki/Markov_decision_process). Aside end.
 
-It should be noted, that for a given state, the agent's best choice for an action depends only on the current state and may not depend on past states. Considering only the information provided by the current state for the next action is known as a [Markow decision process](https://en.wikipedia.org/wiki/Markov_decision_process) (MDP).
+The action is then followed by a **reward** provided by the environment. The 
+reward is a scalar value (higher values are better). During the training, the 
+agent interacts with the environment and the selected optimization method, 
+adjusts the agent's policy in order to *maximize the expectation of future 
+rewards*.
 
 ### Snakes Environment
 

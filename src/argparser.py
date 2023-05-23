@@ -33,7 +33,7 @@ def argument_parser() -> argparse.ArgumentParser:
     # Environment #
     ###############
 
-    parser.add_argument("--field-size", dest="field_size", default=8, type=int)
+    parser.add_argument("--field-size", dest="field_size", default=4, type=int)
 
     parser.add_argument(
         "--mode",
@@ -63,18 +63,26 @@ def argument_parser() -> argparse.ArgumentParser:
     ###########
 
     parser.add_argument(
-        "--learning-rate", dest="learning_rate", default=2e-6, type=float
+        "--learning-rate", dest="learning_rate", default=2e-5, type=float
     )
 
     parser.add_argument(
-        "--num-episodes", dest="num_episodes", default=2_000_000, type=int
+        "--num-iterations", dest="num_iterations", default=500_000, type=int
+    )
+
+    parser.add_argument(
+        "--num-episodes", 
+        dest="num_episodes", 
+        default=1, 
+        type=int,
+        help="Number of episodes per optimization step. (Deep Q-Learning)",
     )
 
     parser.add_argument(
         "--gamma",
         dest="gamma",
         help="Discount or forgetting factor. 0 <= gamma <= 1.",
-        default=0.9,
+        default=0.95,
         type=float,
     )
 
@@ -133,14 +141,14 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-layers", 
         dest="num_layers", 
-        default=3, 
+        default=1, 
         type=int
     )
 
     parser.add_argument(
         "--hidden-units", 
         dest="num_hidden_units", 
-        default=128, 
+        default=32, 
         type=int
     )
 

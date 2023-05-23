@@ -102,6 +102,7 @@ class Snakes(Environment):
 
         self.forbid_growth = args.forbid_growth
         self.size = args.field_size
+        self.num_episodes = args.num_episodes
         self.field = torch.zeros(size=(self.size, self.size))
 
         # Keep track of snake's position.
@@ -151,7 +152,7 @@ class Snakes(Environment):
         return done
 
     def run_episode(self, agent: Agent) -> tuple:
-        """Let agents play one episode of the game.
+        """Let agents play `n` episodes of the game.
 
         The episode stops if the game is won, lost or a draw.
 
@@ -169,9 +170,10 @@ class Snakes(Environment):
             "new_states": [],
             "dones": [],
         }
-        for _ in range(4):
-            state = self._reset()  # TODO: 'state' is reference to 'self.field'.
+        for _ in range(self.num_episodes):
+            # TODO: 'state' is reference to 'self.field'.
             # TODO: Check if same bug is also in TicTacToe project.
+            state = self._reset()  
             done = False
             while not done:
                 events["states"].append(copy.deepcopy(state))
