@@ -234,6 +234,7 @@ class Snakes(Environment):
             A tuple holding state (matrix), reward (scalar),
             and done (bool) indicating if game is finished.
         """
+        # Count number of steps since last food encounter.
         self.step_counter += 1
 
         # Get head coordinates.
@@ -245,7 +246,7 @@ class Snakes(Environment):
         y += dy
 
         if self.step_counter == self.max_steps_episode:
-            # print("Maximum steps exceeded.")
+            # print(f"Maximum steps exceeded ({self.max_steps_episode}).")
             reward = -1.0
             done = True
         elif self._is_outside(x, y) or self._is_overlap(x, y):
@@ -271,6 +272,8 @@ class Snakes(Environment):
 
                 # Add new food.
                 done = self._add_food()
+                # Set counter back.
+                self.step_counter = 0
             else:
                 # No food found yields negative reward to encourage agent
                 # not to dawdling too much.
@@ -343,6 +346,7 @@ class Snakes(Environment):
     def play_agent(self, model: torch.nn.Module) -> None:
         """Runs game with model."""
 
+        # self.max_steps_episode = 999999999
         self._init_render()
         state = self._reset()
         self._render()
@@ -362,7 +366,7 @@ class Snakes(Environment):
                 print(f"{done = }\n")
 
             if done and reward == -1:
-                print("Illegal move.")
+                print("Game over.")
                 exit()
 
             self._render()
