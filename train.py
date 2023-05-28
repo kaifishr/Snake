@@ -7,7 +7,7 @@ the neural network of an agent to play Snakes.
 from src.utils import print_args
 from src.utils import set_random_seed
 from src.argparser import argument_parser
-from src.environment import Snakes
+from src.environment import Snake
 from src.model import Model
 from src.policy_gradient import PolicyGradient
 from src.deep_q_learning import DeepQLearning
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     args = argument_parser()
     print_args(args=args)
 
-    env = Snakes(args=args)
+    env = Snake(args=args)
 
     if args.algorithm == "policy_gradient":
         set_random_seed(seed=args.random_seed)

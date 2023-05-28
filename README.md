@@ -1,15 +1,15 @@
-# Snakes
+# Snake
 
-A minimal environment equipped with reinforcement learning algorithms to train agents to compete in [Snakes](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). Due to its simplicity, this repository is potentially useful for educational purposes and can serve as a starting point to solve more complex scenarios and to test reinforcement learning algorithms.
+A minimal environment equipped with reinforcement learning algorithms to train an agent to play [Snake](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). Due to its simplicity, this repository is potentially useful for educational purposes and can serve as a starting point to solve more complex scenarios and to test reinforcement learning algorithms.
 
 ## Installation
 
-To run *Snakes*, install the latest master directly from GitHub. For a basic 
+To run *Snake*, install the latest master directly from GitHub. For a basic 
 install, run:
 
 ```console
-git clone https://github.com/kaifishr/Snakes
-cd Snakes 
+git clone https://github.com/kaifishr/Snake
+cd Snake 
 pip3 install -r requirements.txt
 ```
 
@@ -18,7 +18,7 @@ pip3 install -r requirements.txt
 Run a training session using a specified learning algorithm:
 
 ```console
-cd Snakes 
+cd Snake 
 python train.py --algorithm policy_gradient
 python train.py --algorithm deep_q_learning
 ```
@@ -26,14 +26,14 @@ python train.py --algorithm deep_q_learning
 Track training progress with Tensorboard:
 
 ```console
-cd Snakes 
+cd Snake 
 tensorboard --logdir runs/
 ```
 
-Watch a trained agent play Snakes:
+Watch a trained agent play Snake:
 
 ```console
-cd Snakes 
+cd Snake 
 python play.py --mode agent --model-name 1
 ```
 
@@ -49,10 +49,10 @@ learn how to correctly interact with a dynamic world.
 
 This repository comes with two basic reinforcement learning algorithms, namely 
 [policy gradients](#policy-gradients) and [deep Q-learning](#deep-q-learning), 
-that are used to train agents to play Snakes. The agent consists of a policy
+that are used to train agents to play Snake. The agent consists of a policy
 network and the reinforcement learning algorithm used to train the network.
 
-In the game of Snakes, the dynamic world, also referred to as the environment,
+In the game of Snake, the dynamic world, also referred to as the environment,
 is represented by the playing field and possibly other agents (in this case
 other snakes) looking for food. An agent observes a **state** represented by 
 the current configuration of the playing field. An example state with a single 
@@ -75,7 +75,7 @@ $$
 with $\circ$ and $\times$ representing the snake's body and food, respectively. 
 
 Based on the observed state, the agent performs an **action**. This action 
-causes the environment to transition to a new state. In the case of Snakes, the
+causes the environment to transition to a new state. In the case of Snake, the
 available actions is the set of possible movement directions ($\uparrow$, 
 $\downarrow$, $\leftarrow$, $\rightarrow$).
 
@@ -97,9 +97,9 @@ agent interacts with the environment and the selected optimization method,
 adjusts the agent's policy in order to *maximize the expectation of future 
 rewards*.
 
-### Snakes Environment
+### Snake Environment
 
-The *Snakes* environment is a grid-like structure that is completely observed by the agent. The position of food and the agent itself on the playing field is encoded into the playing field and represents the state an agent can observe.
+The *Snake* environment is a grid-like structure that is completely observed by the agent. The position of food and the agent itself on the playing field is encoded into the playing field and represents the state an agent can observe.
 
 #### Encoding
 
@@ -179,7 +179,7 @@ If the network's output happens to be a probability distribution (as is the case
 
 In a reinforcement learning setting, an agent can theoretically learn a task in an online mode ([see this example](https://arxiv.org/pdf/2208.07860.pdf)), where the agent's policy (the neural network) is continuously updated. However, in practice, this can lead to unpredictable behavior by the agent that is difficult to control.
 
-Instead of updating the agent's policy at every time step, a common approach is to update the policy between episodes. An episode can be defined as a task we want the agent to learn. For this project, one episode is a game of Snakes, but it can also be the task of [landing a rocket booster autonomously](https://github.com/kaifishr/RocketLander). During an episode, the agent takes actions according to its current policy and collects the rewards. We then use this information to update the policy's parameters and start a new episode.
+Instead of updating the agent's policy at every time step, a common approach is to update the policy between episodes. An episode can be defined as a task we want the agent to learn. For this project, one episode is a game of Snake, but it can also be the task of [landing a rocket booster autonomously](https://github.com/kaifishr/RocketLander). During an episode, the agent takes actions according to its current policy and collects the rewards. We then use this information to update the policy's parameters and start a new episode.
 
 ## TODO
 

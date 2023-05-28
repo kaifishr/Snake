@@ -1,11 +1,11 @@
-"""Snakes game engine.
+"""Snake game engine.
 
-Snakes game with option for arbitrarily many agents.
+Snake game with option for arbitrarily many agents.
 
 Typical usage:
 
     # Play a game against the computer.
-    env = Snakes(size=16, num_agents=2)
+    env = Snake(size=16, num_agents=2)
     env.play()
 
 """
@@ -28,19 +28,19 @@ class Environment:
         self.debug = True
 
 
-class Snakes(Environment):
-    """Snakes environment.
+class Snake(Environment):
+    """Snake environment.
 
-    A simple multi-environment for the game Snakes.
+    A simple environment for the game Snake.
 
     |``````````````````|
     | X  >oooooooooooo |
-    | v              O |
-    | Oooooo  oooooooo |
-    |      O  O        |
-    |  ooooo  oooooo   |
-    |  O           O   |
-    |  ooooooooo   ooo |
+    |                O |
+    |         oooooooo |
+    |         O        |
+    |     O   oooooo   |
+    |     O        O   |
+    |     oooooooooo   |
     |..................|
 
     # Action space
@@ -222,7 +222,7 @@ class Snakes(Environment):
     def step(self, action: int) -> tuple:
         """Performs a single game move for agent.
 
-        A step consists of moving the snakes head to the new position
+        A step consists of moving the snake's head to the new position
         if possible, shorten the snake's tail by unit, and adding new
         food in case no food is left.
 
@@ -262,9 +262,6 @@ class Snakes(Environment):
                 # Snake moves and grows.
                 self.pos_q.append((x, y))
                 # Update playing field.
-                # Fast update without color encoding.
-                # x_head, y_head = self.pos_q[-1]
-                # self.field[y_head, x_head] = 1
                 if self.forbid_growth:
                     x_tail, y_tail = self.pos_q[0]
                     self.field[y_tail, x_tail] = 0
@@ -286,8 +283,6 @@ class Snakes(Environment):
                 # Update playing field.
                 x_tail, y_tail = self.pos_q[0]
                 self.field[y_tail, x_tail] = 0
-                # x_head, y_head = self.pos_q[-1]
-                # self.field[y_head, x_head] = 1
 
                 # Register snake's tail.
                 self.pos_q.popleft()
@@ -373,7 +368,7 @@ class Snakes(Environment):
 
     def _init_render(self) -> None:
         self.fig, axis = plt.subplots()
-        self.fig.canvas.manager.set_window_title("Snakes")
+        self.fig.canvas.manager.set_window_title("Snake")
         field = self.field.numpy()
         extent = (0, field.shape[1], field.shape[0], 0)
         self.img = axis.imshow(

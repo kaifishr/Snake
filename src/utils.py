@@ -66,7 +66,7 @@ def print_args(args) -> None:
     Args:
         args: Parsed arguments.
     """
-    print("\nSnakes configuration:\n")
+    print("\nSnake configuration:\n")
     representation = "{k:.<32}{v}"
     for key, value in vars(args).items():
         print(representation.format(k=key, v=value))

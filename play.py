@@ -3,7 +3,7 @@ from src.utils import print_args
 from src.utils import load_checkpoint
 from src.argparser import argument_parser
 from src.model import Model
-from src.environment import Snakes
+from src.environment import Snake
 
 
 if __name__ == "__main__":
@@ -13,10 +13,10 @@ if __name__ == "__main__":
     if args.mode == "agent":
         model = Model(args=args)
         load_checkpoint(model=model, args=args)
-        env = Snakes(args=args)
+        env = Snake(args=args)
         env.play_agent(model=model)
     elif args.mode == "human":
-        env = Snakes(args=args)
+        env = Snake(args=args)
         env.play()
     else:
         raise NotImplementedError(f"Mode '{args.mode}' not implemented.")
