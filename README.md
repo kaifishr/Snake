@@ -107,7 +107,7 @@ A possible encoding scheme for a game with a single agent, where food is encoded
 
 $$
 \begin{pmatrix}
-2 & 1 & 1 & 1 & 1 \\
+-1 & 1 & 1 & 1 & 1 \\
 0 & 0 & 0 & 0 & 1 \\
 0 & 1 & 1 & 0 & 1 \\
 0 & 1 & 0 & 0 & 1 \\
@@ -126,35 +126,32 @@ $$
 \end{aligned}
 $$
 
-However, this encoding scheme has the weakness that it is not clear in which direction the agent is oriented. Possible approaches to fix this problem is to add a color gradient or to subtract the present from the last state to encode where the agent is going.
+However, this encoding scheme has the weakness that it is not clear in which direction the agent is moving, making it hard to train an agent. In order to detect the direction of a moving snake, a color gradient can be added to the snake's encoding. Alternatively, the difference of two consecutive frames (or states) or a sequence of frames can be fed into the policy network.
 
 #### Actions
 
 Based on the present state, an agent selects one out of four actions. These actions are going *left*, *right*, *up* and *down*. Actions are determined by the agent's current policy. Here, the policy is modeled as a neural network with four output neurons. The actions are integer-valued and retrieved by applying the argmax function to the network's output neurons.
 
-Even though there are four actions available, not all moves are allowed (colliding with own body or hitting obstacles such as other agents or the playing fields border). If the action is legal, the opponents make their moves, and the agent observes the new state.
+Even though there are four actions available, not all moves are allowed (colliding with own body or hitting obstacles such as other agents or the playing fields border). If the action is legal, the opponents make their moves, and the agent observes the new state. 
 
 States where the agent finds food come with a reward of +1. Making illegal moves results in a reward of -1. Punishing wrong moves encourages the agent to learn only legal moves over time. All other states (including draws) yield a reward of 0. 
 
 ### Policy Network
 
-[Playing Atari with Deep Reinforcement Learning](https://arxiv.org/abs/1312.5602) showed that the use of deep neural networks is a powerful option to represent reinforcement learning models that map states to (a distribution over) actions.
-
-The policy network receives a state difference matrix $\boldsymbol S$ and uses a softmax output layer to return a probability distribution over the four possible actions. 
-
-In order to detect the direction of the moving snakes, the difference of two consecutive frames (or states) are fed into the policy network. That means that in a preprocessing step, we subtract the current from the last frame and feed the difference frame to our network. Using the example from above, we can illustrate this as follows:
+[Playing Atari with Deep Reinforcement Learning](https://arxiv.org/abs/1312.5602) showed neural networks are a powerful option to represent a policy that maps states to (a distribution over) actions. The policy network receives a state $\boldsymbol S$ and returns a distribution over the four possible actions. 
 
 $$
 \begin{aligned}
 \boldsymbol p_{t}
 = \text{policy}
 \begin{pmatrix}
-\boldsymbol S_{t},
-\boldsymbol S_{t-1}
+\boldsymbol S_{t}
 ; \boldsymbol \theta
 \end{pmatrix}
 \end{aligned}
 $$
+
+Using the gradient-based encoding scheme from above, the policy network's mapping can be illustrated as follows:
 
 $$
 \begin{pmatrix}
@@ -162,43 +159,27 @@ $$
 0.1\\
 0.3\\
 0.2
-\end{pmatrix}
+\end{pmatrix}_{t}
 = \text{policy}
 \begin{pmatrix}
 \begin{pmatrix}
-2 & 1 & 1 & 1 & 1 \\
-0 & 0 & 0 & 0 & 1 \\
-0 & 1 & 1 & 0 & 1 \\
-0 & 1 & 0 & 0 & 1 \\
-0 & 1 & 1 & 1 & 1
-\end{pmatrix}_{t},
-\begin{pmatrix}
-2 & 0 & 1 & 1 & 1 \\
-0 & 0 & 0 & 0 & 1 \\
-0 & 1 & 1 & 1 & 1 \\
-0 & 1 & 0 & 0 & 1 \\
-0 & 1 & 1 & 1 & 1
-\end{pmatrix}_{t-1}
+-1 & 1.1 & 1.2 & 1.3 & 1.4 \\
+0 & 0 & 0 & 0 & 1.5 \\
+0 & 2.3 & 2.4 & 0 & 1.6 \\
+0 & 2.2 & 0 & 0 & 1.7 \\
+0 & 2.1 & 2.0 & 1.9 & 1.8
+\end{pmatrix}_{t}
 ; \boldsymbol \theta
 \end{pmatrix}
 $$
 
-We can choose an action by either choosing the action with the highest probability or by sampling from the output probability distribution.
-
+If the network's output happens to be a probability distribution (as is the case with policy gradients) and action can be choosen by either selecting the action with the highest probability or by sampling from the output probability distribution.
 
 ### Episodic Learning
 
 In a reinforcement learning setting, an agent can theoretically learn a task in an online mode ([see this example](https://arxiv.org/pdf/2208.07860.pdf)), where the agent's policy (the neural network) is continuously updated. However, in practice, this can lead to unpredictable behavior by the agent that is difficult to control.
 
-Instead of updating the agent's policy at every time step, a common approach is to update the policy between episodes. An episode can be defined as a task we want the agent to learn. For this project, one episode is a game of Snakes, but it can also be the task of [landing a rocket booster autonomously](https://github.com/kaifishr/RocketLander).
-
-During an episode, the agent takes actions according to its current policy and collects the rewards. We then use this information to update the policy's parameters and start a new episode.
-
-
-### Multi-agent Reinforcement Learning
-
-This framework allows several agents to be trained at the same time and let them compete against each other. To ensure that the agents generalize well, it is generally a good idea to work with an ensemble of opponent agents that are sampled at random to compete against each other.
-
+Instead of updating the agent's policy at every time step, a common approach is to update the policy between episodes. An episode can be defined as a task we want the agent to learn. For this project, one episode is a game of Snakes, but it can also be the task of [landing a rocket booster autonomously](https://github.com/kaifishr/RocketLander). During an episode, the agent takes actions according to its current policy and collects the rewards. We then use this information to update the policy's parameters and start a new episode.
 
 ## TODO
 
