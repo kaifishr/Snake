@@ -1,7 +1,6 @@
 # Snakes
 
-A minimal environment equipped with reinforcement learning algorithms to train agents to compete in [Snakes](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). Due to its simplicity, this repository is potentially useful for educational purposes and can serve as a starting point to solve more complex scenarios and to test reinforcement
-learning algorithms.
+A minimal environment equipped with reinforcement learning algorithms to train agents to compete in [Snakes](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). Due to its simplicity, this repository is potentially useful for educational purposes and can serve as a starting point to solve more complex scenarios and to test reinforcement learning algorithms.
 
 ## Installation
 
@@ -20,22 +19,22 @@ Run a training session using a specified learning algorithm:
 
 ```console
 cd Snakes 
-python train.py -a "policy_gradient"
-python train.py -a "deep_q_learning"
+python train.py --algorithm policy_gradient
+python train.py --algorithm deep_q_learning
 ```
 
-Track important metrics during training with Tensorboard:
+Track training progress with Tensorboard:
 
 ```console
 cd Snakes 
 tensorboard --logdir runs/
 ```
 
-After training, play Snakes against an agent:
+Watch a trained agent play Snakes:
 
 ```console
 cd Snakes 
-python play.py -a deep_q_learning -mn agent_a 
+python play.py --mode agent --model-name 1
 ```
 
 ## Introduction
@@ -100,9 +99,11 @@ rewards*.
 
 ### Snakes Environment
 
-This section describes the details of the Snakes environment as well as the action and reward scheme.
+The *Snakes* environment is a grid-like structure that is completely observed by the agent. The position of food and the agent itself on the playing field is encoded into the playing field and represents the state an agent can observe.
 
-The states that the agent observes, and that is later fed into the policy network, are the positions of other snakes as well as the food. A possible encoding scheme for a game with a single agent, where food is encoded as $2$, the snake's body using $1$ s, and empty space using $O$ s, looks as follows:
+#### Encoding
+
+A possible encoding scheme for a game with a single agent, where food is encoded as $2$, the snake's body using $1$ s, and empty space using $O$ s, looks as follows:
 
 $$
 \begin{pmatrix}
@@ -125,9 +126,13 @@ $$
 \end{aligned}
 $$
 
+However, this encoding scheme has the weakness that it is not clear in which direction the agent is oriented. Possible approaches to fix this problem is to add a color gradient or to subtract the present from the last state to encode where the agent is going.
+
+#### Actions
+
 Based on the present state, an agent selects one out of four actions. These actions are going *left*, *right*, *up* and *down*. Actions are determined by the agent's current policy. Here, the policy is modeled as a neural network with four output neurons. The actions are integer-valued and retrieved by applying the argmax function to the network's output neurons.
 
-Even though there are four actions available, not all moves are allowed (hitting obstacles). If the action is legal, the opponents make their moves, and the agent observes the new state.
+Even though there are four actions available, not all moves are allowed (colliding with own body or hitting obstacles such as other agents or the playing fields border). If the action is legal, the opponents make their moves, and the agent observes the new state.
 
 States where the agent finds food come with a reward of +1. Making illegal moves results in a reward of -1. Punishing wrong moves encourages the agent to learn only legal moves over time. All other states (including draws) yield a reward of 0. 
 
