@@ -259,8 +259,10 @@ class Snake(Environment):
             if self.field[y, x] == -1:
                 # Reward for food found.
                 reward = 1.0
+
                 # Snake moves and grows.
                 self.pos_q.append((x, y))
+
                 # Update playing field.
                 if self.forbid_growth:
                     x_tail, y_tail = self.pos_q[0]
@@ -269,6 +271,7 @@ class Snake(Environment):
 
                 # Add new food.
                 done = self._add_food()
+
                 # Set counter back.
                 self.step_counter = 0
             else:

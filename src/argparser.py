@@ -8,8 +8,8 @@ import argparse
 
 def argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="Snakes",
-        description="Trains agent to play Snakes with reinforcement learning.",
+        prog="Snake",
+        description="Trains agent to play Snake with reinforcement learning.",
     )
 
     parser.add_argument("--random-seed", dest="random_seed", default=42, type=int)
@@ -27,13 +27,18 @@ def argument_parser() -> argparse.ArgumentParser:
         type=str,
     )
 
-    parser.add_argument("--num-agents", dest="num_agents", default=1, type=int)
+    # parser.add_argument("--num-agents", dest="num_agents", default=1, type=int)
 
     ###############
     # Environment #
     ###############
 
-    parser.add_argument("--field-size", dest="field_size", default=4, type=int)
+    parser.add_argument(
+        "--field-size", 
+        dest="field_size", 
+        default=8, 
+        type=int
+    )
 
     parser.add_argument(
         "--mode",
@@ -43,7 +48,12 @@ def argument_parser() -> argparse.ArgumentParser:
         type=str,
     )
 
-    parser.add_argument("--render", dest="render", default=False, type=bool)
+    parser.add_argument(
+        "--render", 
+        dest="render", 
+        default=False, 
+        type=bool
+    )
 
     parser.add_argument(
         "--forbid-growth",
@@ -63,17 +73,23 @@ def argument_parser() -> argparse.ArgumentParser:
     ###########
 
     parser.add_argument(
-        "--learning-rate", dest="learning_rate", default=2e-5, type=float
+        "--learning-rate", 
+        dest="learning_rate", 
+        default=1e-5, 
+        type=float
     )
 
     parser.add_argument(
-        "--num-iterations", dest="num_iterations", default=500_000, type=int
+        "--num-iterations", 
+        dest="num_iterations", 
+        default=1_000_000, 
+        type=int
     )
 
     parser.add_argument(
         "--num-episodes", 
         dest="num_episodes", 
-        default=1, 
+        default=8,
         type=int,
         help="Number of episodes per optimization step. (Deep Q-Learning)",
     )
@@ -89,8 +105,8 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--epsilon",
         dest="epsilon",
-        help="Epsilon-greedy value (exploration rate).",
-        default=1.0,
+        help="Initial epsilon-greedy value (exploration rate).",
+        default=0.5,
         type=float,
     )
 
@@ -106,7 +122,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--decay-rate",
         dest="decay_rate",
         help="Decay rate for epsilon-greedy value.",
-        default=0.99999,
+        default=0.999997,
         type=float,
     )
 
@@ -114,11 +130,16 @@ def argument_parser() -> argparse.ArgumentParser:
         "--memory-size",
         dest="memory_size",
         help="Replay memory size. Set to 1 for no memory.",
-        default=10_000,
+        default=5_000,
         type=int,
     )
 
-    parser.add_argument("--batch_size", dest="batch_size", default=256, type=int)
+    parser.add_argument(
+        "--batch_size", 
+        dest="batch_size", 
+        default=256,
+        type=int
+    )
 
     #############################
     # Model / policy parameters #
@@ -148,7 +169,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--hidden-units", 
         dest="num_hidden_units", 
-        default=32, 
+        default=64, 
         type=int
     )
 

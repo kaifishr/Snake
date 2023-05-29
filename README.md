@@ -183,8 +183,7 @@ Instead of updating the agent's policy at every time step, a common approach is 
 
 ## TODO
 
-- Allow slow growth.
-- Make encoding optional.
+- Allow slow growth (curriculum learning).
 - Implement adaptive epsilon decay rate for deep q-learning.
 - Add Boltzmann exploration and epsilon-greedy sampling.
 
