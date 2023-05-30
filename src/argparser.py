@@ -98,7 +98,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--gamma",
         dest="gamma",
         help="Discount or forgetting factor. 0 <= gamma <= 1.",
-        default=0.95,
+        default=0.9,
         type=float,
     )
 
@@ -122,7 +122,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--decay-rate",
         dest="decay_rate",
         help="Decay rate for epsilon-greedy value.",
-        default=0.999997,
+        default=0.999992,
         type=float,
     )
 
