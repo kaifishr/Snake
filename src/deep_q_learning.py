@@ -25,6 +25,7 @@ class DeepQLearning(Agent):
         optimizer:
         criterion:
     """
+    num_actions: int = 4
 
     def __init__(self, model: nn.Module, args) -> None:
         """Initializes class."""
@@ -58,7 +59,7 @@ class DeepQLearning(Agent):
         """
         if random.random() < self.epsilon:
             # Exploration by choosing random action.
-            action = random.randint(0, 3)
+            action = random.randint(0, self.num_actions - 1)
         else:
             # Exploitation by selecting action according to policy
             # with highest predicted utility at current state.

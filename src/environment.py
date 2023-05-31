@@ -352,7 +352,7 @@ class Snake(Environment):
         done = False
 
         while not done:
-            time.sleep(0.1)  # TODO: Make this a parameter.
+            time.sleep(0.05)  # TODO: Make this a parameter.
 
             action = model.predict(state)
             state, reward, done = self.step(action=action)
@@ -365,7 +365,6 @@ class Snake(Environment):
 
             if done and reward == -1:
                 print("Game over.")
-                exit()
 
             self._render()
 
