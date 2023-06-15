@@ -183,6 +183,8 @@ Instead of updating the agent's policy at every time step, a common approach is 
 
 ## TODO
 
+- Add FIFO for policy gradients.
+- Add time stamp to console print.
 - Allow slow growth (curriculum learning).
 - Implement adaptive epsilon decay rate for deep q-learning.
 - Add Boltzmann exploration and epsilon-greedy sampling.
