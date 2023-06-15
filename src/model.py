@@ -1,6 +1,6 @@
 """Policy model.
 
-Fully-connected neural network with residual connections.
+Convolutional neural network with residual connections.
 The models represent the agent's policy and map states
 to actions.
 
@@ -9,6 +9,47 @@ import torch
 import torch.nn as nn
 
 from src.utils import eval
+
+
+class ConvBlock(nn.Module):
+    """Convolutional block.
+
+    Attributes:
+        conv_block:
+    """
+
+    def __init__(
+            self, 
+            in_channels: int, 
+            out_channels: int, 
+            hidden_channels: int = None
+        ) -> None:
+        super().__init__()
+
+        hidden_channels = hidden_channels or out_channels
+
+        conv_config = {"kernel_size": 3, "stride": 1, "padding": "same"}
+
+        self.conv_block = nn.Sequential(
+            nn.Conv2d(
+                in_channels=in_channels, 
+                out_channels=hidden_channels, 
+                **conv_config
+            ),
+            nn.GroupNorm(1, hidden_channels),
+            nn.GELU(),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            x: Input tensor of shape (1, field_size, field_size).
+
+        Returns:
+            Tensor of same shape as input.
+        """
+        x = x + self.conv_block(x)
+        return x
 
 
 class Model(nn.Module):
@@ -26,16 +67,21 @@ class Model(nn.Module):
         hidden_channels = 32
 
         self.conv_block = nn.Sequential(
-            nn.LayerNorm((1, field_size, field_size)),
-            nn.Conv2d(in_channels=1, out_channels=hidden_channels, kernel_size=3, stride=1, padding="same"),
-            nn.GELU(),
-            nn.LayerNorm((hidden_channels, field_size, field_size)),
-            nn.Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding="same"),
-            nn.GELU(),
-            nn.LayerNorm((hidden_channels, field_size, field_size)),
-            nn.Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding="same"),
-            nn.GELU(),
-            nn.LayerNorm((hidden_channels, field_size, field_size)),
+            nn.GroupNorm(1, 1),
+            ConvBlock(in_channels=1, out_channels=hidden_channels),
+            ConvBlock(in_channels=hidden_channels, out_channels=hidden_channels),
+            ConvBlock(in_channels=hidden_channels, out_channels=hidden_channels),
+            ConvBlock(in_channels=hidden_channels, out_channels=hidden_channels),
+            # nn.LayerNorm((1, field_size, field_size)),
+            # nn.Conv2d(in_channels=1, out_channels=hidden_channels, kernel_size=3, stride=1, padding="same"),
+            # nn.GELU(),
+            # nn.LayerNorm((hidden_channels, field_size, field_size)),
+            # nn.Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding="same"),
+            # nn.GELU(),
+            # nn.LayerNorm((hidden_channels, field_size, field_size)),
+            # nn.Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding="same"),
+            # nn.GELU(),
+            # nn.LayerNorm((hidden_channels, field_size, field_size)),
         )
 
         in_features_dense = hidden_channels * field_size * field_size
