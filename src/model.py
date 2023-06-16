@@ -1,6 +1,6 @@
 """Policy model.
 
-Convolutional neural network with residual connections.
+Convolutional neural network policy model.
 The models represent the agent's policy and map states
 to actions.
 
@@ -48,7 +48,7 @@ class ConvBlock(nn.Module):
         Returns:
             Tensor of same shape as input.
         """
-        x = x + self.conv_block(x)
+        x = self.conv_block(x)
         return x
 
 
@@ -62,29 +62,26 @@ class Model(nn.Module):
         super().__init__()
 
         field_size = args.field_size
-        # num_layers = args.num_layers
+        num_layers = args.num_layers
+        num_channels = args.num_channels
+
         is_policy_gradient = args.algorithm == "policy_gradient"
-        hidden_channels = 32
+
+        blocks = [
+            ConvBlock(
+                in_channels=num_channels, 
+                out_channels=num_channels
+            )
+            for _ in range(num_layers)
+        ]
 
         self.conv_block = nn.Sequential(
             nn.GroupNorm(1, 1),
-            ConvBlock(in_channels=1, out_channels=hidden_channels),
-            ConvBlock(in_channels=hidden_channels, out_channels=hidden_channels),
-            ConvBlock(in_channels=hidden_channels, out_channels=hidden_channels),
-            ConvBlock(in_channels=hidden_channels, out_channels=hidden_channels),
-            # nn.LayerNorm((1, field_size, field_size)),
-            # nn.Conv2d(in_channels=1, out_channels=hidden_channels, kernel_size=3, stride=1, padding="same"),
-            # nn.GELU(),
-            # nn.LayerNorm((hidden_channels, field_size, field_size)),
-            # nn.Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding="same"),
-            # nn.GELU(),
-            # nn.LayerNorm((hidden_channels, field_size, field_size)),
-            # nn.Conv2d(in_channels=hidden_channels, out_channels=hidden_channels, kernel_size=3, stride=1, padding="same"),
-            # nn.GELU(),
-            # nn.LayerNorm((hidden_channels, field_size, field_size)),
+            ConvBlock(in_channels=1, out_channels=num_channels),
+            *blocks
         )
 
-        in_features_dense = hidden_channels * field_size * field_size
+        in_features_dense = num_channels * field_size * field_size
 
         self.dense_block = nn.Sequential(
             nn.Flatten(),

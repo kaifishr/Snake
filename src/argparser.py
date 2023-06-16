@@ -89,7 +89,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-episodes", 
         dest="num_episodes", 
-        default=8,
+        default=4,
         type=int,
         help="Number of episodes per optimization step. (Deep Q-Learning)",
     )
@@ -122,7 +122,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--decay-rate",
         dest="decay_rate",
         help="Decay rate for epsilon-greedy value.",
-        default=0.999992,
+        default=0.99999,
         type=float,
     )
 
@@ -162,20 +162,20 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-layers", 
         dest="num_layers", 
-        default=1, 
+        default=3, 
         type=int
     )
-
+    
     parser.add_argument(
-        "--hidden-units", 
-        dest="num_hidden_units", 
-        default=64, 
+        "--num-channels", 
+        dest="num_channels", 
+        default=16, 
         type=int
     )
 
-    #######################
-    # Tensorboard / Model #
-    #######################
+    ###############
+    # Tensorboard #
+    ###############
     parser.add_argument(
         "--save-stats-every-n",
         dest="save_stats_every_n",
@@ -183,6 +183,10 @@ def argument_parser() -> argparse.ArgumentParser:
         default=100,
         type=int,
     )
+
+    ###############
+    # Checkpoints #
+    ###############
 
     parser.add_argument(
         "--save-model-every-n",
