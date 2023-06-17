@@ -75,7 +75,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--learning-rate", 
         dest="learning_rate", 
-        default=1e-5, 
+        default=3e-4, 
         type=float
     )
 
@@ -153,8 +153,8 @@ def argument_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--dropout-probability",
-        dest="dropout_probability",
+        "--dropout-rate",
+        dest="dropout_rate",
         default=0.0,
         type=float,
     )
@@ -162,14 +162,14 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-layers", 
         dest="num_layers", 
-        default=3, 
+        default=4, 
         type=int
     )
     
     parser.add_argument(
         "--num-channels", 
         dest="num_channels", 
-        default=16, 
+        default=32, 
         type=int
     )
 

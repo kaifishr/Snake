@@ -22,7 +22,8 @@ class ConvBlock(nn.Module):
             self, 
             in_channels: int, 
             out_channels: int, 
-            hidden_channels: int = None
+            hidden_channels: int = None,
+            dropout_rate: float = 0.0
         ) -> None:
         super().__init__()
 
@@ -38,6 +39,7 @@ class ConvBlock(nn.Module):
             ),
             nn.GroupNorm(1, hidden_channels),
             nn.GELU(),
+            nn.Dropout(p=dropout_rate)
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -64,13 +66,15 @@ class Model(nn.Module):
         field_size = args.field_size
         num_layers = args.num_layers
         num_channels = args.num_channels
+        dropout_rate = args.dropout_rate
 
         is_policy_gradient = args.algorithm == "policy_gradient"
 
         blocks = [
             ConvBlock(
                 in_channels=num_channels, 
-                out_channels=num_channels
+                out_channels=num_channels,
+                dropout_rate=dropout_rate
             )
             for _ in range(num_layers)
         ]
@@ -109,7 +113,7 @@ class Model(nn.Module):
         Args:
             x: Input tensor.
         """
-        x = torch.unsqueeze(input=x, dim=1)  # Add dimension to represent the channel.
+        x = torch.unsqueeze(input=x, dim=1)  # Add channel dimension.
         x = self.conv_block(x)
         x = self.dense_block(x)
         return x
