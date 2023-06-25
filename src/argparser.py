@@ -1,28 +1,32 @@
-"""Argument parser.
+"""Argument parser
 
 Holds environment and learning parameters.
-
 """
 import argparse
 
 
 def argument_parser() -> argparse.ArgumentParser:
+
     parser = argparse.ArgumentParser(
         prog="Snake",
-        description="Trains agent to play Snake with reinforcement learning.",
+        description="Snake with reinforcement learning.",
     )
 
-    parser.add_argument("--random-seed", dest="random_seed", default=42, type=int)
+    parser.add_argument(
+        "--random-seed", 
+        dest="random_seed", 
+        default=42, 
+        type=int
+    )
 
     #########
     # Agent #
     #########
-
     parser.add_argument(
         "--algorithm",
         dest="algorithm",
         help="Reinforcement learning algorithm.",
-        default="policy_gradient",
+        default="deep_q_learning",
         choices=["policy_gradient", "deep_q_learning"],
         type=str,
     )
@@ -32,12 +36,19 @@ def argument_parser() -> argparse.ArgumentParser:
     ###############
     # Environment #
     ###############
-
     parser.add_argument(
         "--field-size", 
         dest="field_size", 
         default=8, 
         type=int
+    )
+
+    parser.add_argument(
+        "--num-frames", 
+        dest="num_frames", 
+        default=2, 
+        type=int,
+        help="Number of past frames that are fed into the policy network.",
     )
 
     parser.add_argument(
@@ -71,11 +82,10 @@ def argument_parser() -> argparse.ArgumentParser:
     ###########
     # Trainer #
     ###########
-
     parser.add_argument(
         "--learning-rate", 
         dest="learning_rate", 
-        default=3e-4, 
+        default=2e-4, 
         type=float
     )
 
@@ -89,7 +99,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-episodes", 
         dest="num_episodes", 
-        default=4,
+        default=8,
         type=int,
         help="Number of episodes per optimization step. (Deep Q-Learning)",
     )
@@ -122,7 +132,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--decay-rate",
         dest="decay_rate",
         help="Decay rate for epsilon-greedy value.",
-        default=0.99999,
+        default=0.999995,
         type=float,
     )
 
@@ -187,7 +197,6 @@ def argument_parser() -> argparse.ArgumentParser:
     ###############
     # Checkpoints #
     ###############
-
     parser.add_argument(
         "--save-model-every-n",
         dest="save_model_every_n",
