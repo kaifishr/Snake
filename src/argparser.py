@@ -26,7 +26,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--algorithm",
         dest="algorithm",
         help="Reinforcement learning algorithm.",
-        default="deep_q_learning",
+        default="policy_gradient",
         choices=["policy_gradient", "deep_q_learning"],
         type=str,
     )
@@ -46,7 +46,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-frames", 
         dest="num_frames", 
-        default=2, 
+        default=3, 
         type=int,
         help="Number of past frames that are fed into the policy network.",
     )

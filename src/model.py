@@ -65,6 +65,7 @@ class Model(nn.Module):
 
         field_size = args.field_size
         num_layers = args.num_layers
+        num_frames = args.num_frames
         num_channels = args.num_channels
         dropout_rate = args.dropout_rate
 
@@ -80,8 +81,8 @@ class Model(nn.Module):
         ]
 
         self.conv_block = nn.Sequential(
-            nn.GroupNorm(1, 1),
-            ConvBlock(in_channels=1, out_channels=num_channels),
+            nn.GroupNorm(1, num_frames),
+            ConvBlock(in_channels=num_frames, out_channels=num_channels),
             *blocks
         )
 
@@ -89,7 +90,10 @@ class Model(nn.Module):
 
         self.dense_block = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(in_features=in_features_dense, out_features=self.num_actions),
+            nn.Linear(
+                in_features=in_features_dense, 
+                out_features=self.num_actions
+            ),
             nn.Softmax(dim=-1) if is_policy_gradient else nn.Identity(),
         )
 
@@ -104,7 +108,7 @@ class Model(nn.Module):
         Returns:
             The action represented by an integer.
         """
-        prediction = self(state)
+        prediction = self(state.unsqueeze(dim=0))
         action = torch.argmax(prediction, dim=-1).item()
         return action
 
@@ -113,7 +117,6 @@ class Model(nn.Module):
         Args:
             x: Input tensor.
         """
-        x = torch.unsqueeze(input=x, dim=1)  # Add channel dimension.
         x = self.conv_block(x)
         x = self.dense_block(x)
         return x

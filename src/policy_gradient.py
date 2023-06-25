@@ -45,14 +45,14 @@ class PolicyGradient(Agent):
         from this distribution.
 
         Args:
-            state: Tensor representing playing field state.
+            state: Tensor representing past playing field states.
 
         Returns:
             Sampled action represented by an integer.
         """
         self.model.eval()
         # Build the probability density function (PDF) for the given state.
-        action_prob = self.model(state)
+        action_prob = self.model(state.unsqueeze(dim=0))
         # Sample action from the distribution (PDF).
         action = torch.multinomial(action_prob, num_samples=1).item()
         self.model.train()
@@ -74,7 +74,8 @@ class PolicyGradient(Agent):
         discounted_rewards = torch.tensor(discounted_rewards)
         discounted_rewards = self._normalize_rewards(rewards=discounted_rewards)
 
-        states = torch.vstack(states)
+        states = torch.stack(states, dim=0)
+
         target_actions = F.one_hot(
             torch.tensor(actions), 
             num_classes=self.num_actions

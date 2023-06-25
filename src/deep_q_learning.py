@@ -98,8 +98,8 @@ class DeepQLearning(Agent):
             memory[2] = reward
 
         # Get states from replay buffer.
-        states = torch.vstack([memory[0] for memory in replay_batch])
-        new_states = torch.vstack([memory[3] for memory in replay_batch])
+        states = torch.stack([memory[0] for memory in replay_batch], dim=0)
+        new_states = torch.stack([memory[3] for memory in replay_batch], dim=0)
 
         self.model.eval()
         q_targets = self.model(states)

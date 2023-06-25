@@ -103,25 +103,34 @@ class Snake(Environment):
         self.forbid_growth = args.forbid_growth
         self.size = args.field_size
         self.num_episodes = args.num_episodes
-        self.field = torch.zeros(size=(self.size, self.size))
+        self.num_frames = args.num_frames
+        self.field = torch.zeros(size=(self.size, self.size)) # TODO: Required?
 
         # Keep track of snake's position.
         self.pos_q = None
-        self.coord = None  # Holds coordiante tuples of playing field.
+        self.coord = None  # Holds coordinate tuples of playing field.
 
-        # Lookup table to map actions to moves.
-        # TODO: Use east, west, south, and north instead of 0, 1, 2, 3?
+        # Lookup table to map actions to moves (left, right, up, down).
         self.action_to_move = {0: (1, 0), 1: (0, -1), 2: (-1, 0), 3: (0, 1)}
         # TODO: Move this to a render class?
         self.key_to_action = {"w": 1, "a": 2, "s": 3, "d": 0}
 
-        self.max_steps_episode = 2 * self.size * self.size
+        # Maximum number of steps an agent can take to get to the next treat.
+        self.max_steps_episode = self.size * self.size
         self.step_counter = 0
 
+        # Initialize past frames with tensor filled with scalar value 0.
+        self.frames = self._init_frames()  # TODO: Required?
+
+    def _init_frames(self) -> None:
+        """Initialize past frames with tensor filled with scalar value 0."""
+        frames = collections.deque(maxlen=self.num_frames)
+        for _ in range(self.num_frames):
+            frames.append(torch.zeros(size=(self.size, self.size)))
+        return frames
+
     def _init_agents(self) -> None:
-        """Initializes position of agents.
-        TODO: Add random non-overlapping initial positions.
-        """
+        """Initializes position of agent."""
         # Create list of all playing field coordinates.
         # Used later to place food.
         l = list(range(self.size))
@@ -173,7 +182,7 @@ class Snake(Environment):
         for _ in range(self.num_episodes):
             # TODO: 'state' is reference to 'self.field'.
             # TODO: Check if same bug is also in TicTacToe project.
-            state = self._reset()  
+            state = self._reset()
             done = False
             while not done:
                 events["states"].append(copy.deepcopy(state))
@@ -181,9 +190,10 @@ class Snake(Environment):
                 new_state, reward, done = self.step(action=action)
                 events["actions"].append(action)
                 events["rewards"].append(reward)
-                events["new_states"].append(copy.deepcopy(new_state))
                 events["dones"].append(done)
-                state = new_state
+                self.frames.append(new_state)
+                state = torch.stack(list(self.frames), dim=0)
+                events["new_states"].append(copy.deepcopy(state))
 
         return events
 
@@ -295,7 +305,7 @@ class Snake(Environment):
             for i, (x, y) in enumerate(self.pos_q):
                 self.field[y, x] = encoding[i]
 
-        state = self.field[None, ...]
+        state = self.field
 
         return state, reward, done
 
@@ -411,8 +421,10 @@ class Snake(Environment):
         # Initialize new agents.
         self._init_agents()
 
-        state = self.field[None, ...]
         self.step_counter = 0
+
+        frames = self._init_frames()
+        state = torch.stack(tensors=list(frames), dim=0)
 
         return state
 
