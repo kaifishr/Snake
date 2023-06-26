@@ -3,9 +3,8 @@
 A minimal environment equipped with reinforcement learning algorithms to train an agent to play [Snake](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). Both the learning algorithms as well as the game engine are implemented from scratch with a focus on simplicity, making it potentially useful for educational purposes and serving as a starting point to solve more complex scenarios, test reinforcement learning algorithms, and other extensions.
 
 <p align="center">
-  <img src="docs/video/out.gif", width="196"/>
+  <img src="docs/video/sample.gif", width="196"/>
 </p>
-
 
 ## Installation
 
