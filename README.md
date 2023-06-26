@@ -153,26 +153,6 @@ $$
 \end{pmatrix}
 $$
 
-$$
-\begin{pmatrix}
-0.4\\
-0.1\\
-0.3\\
-0.2
-\end{pmatrix}_{t}
-= \text{policy}
-\begin{pmatrix}
-\begin{pmatrix}
--1 & 1.1 & 1.2 & 1.3 & 1.4 \\
-0 & 0 & 0 & 0 & 1.5 \\
-0 & 2.3 & 2.4 & 0 & 1.6 \\
-0 & 2.2 & 0 & 0 & 1.7 \\
-0 & 2.1 & 2.0 & 1.9 & 1.8 \\
-\end{pmatrix}_{t}
-; \boldsymbol \theta
-\end{pmatrix}
-$$
-
 In case a sequence of frames is used as the input, the mapping can be illustrated as follows:
 
 $$
@@ -190,7 +170,7 @@ $$
 0 & 1 & 1 & 0 & 1 \\
 0 & 1 & 0 & 0 & 1 \\
 0 & 1 & 1 & 1 & 1 \\
-\end{pmatrix}_{t},
+\end{pmatrix}_t,
 \begin{pmatrix}
 -1 & 0 & 1 & 1 & 1 \\
 0 & 0 & 0 & 0 & 1 \\
