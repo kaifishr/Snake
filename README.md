@@ -120,21 +120,18 @@ States where the agent finds food come with a reward of +1. Illegal moves result
 
 [Playing Atari with Deep Reinforcement Learning](https://arxiv.org/abs/1312.5602) showed neural networks are a powerful option to represent a policy that maps states to (a distribution over) actions. The policy network receives a state $\boldsymbol S$ and returns a distribution over the four possible actions. 
 
-$$
-\begin{aligned}
+$\begin{aligned}
 \boldsymbol p_{t}
 = \text{policy}
 \begin{pmatrix}
 \boldsymbol S_{t}
 ; \boldsymbol \theta
 \end{pmatrix}
-\end{aligned}
-$$
+\end{aligned}$
 
 Using the gradient-based encoding scheme from above, the policy network's mapping can be illustrated as follows:
 
-$$
-\begin{pmatrix}
+$\begin{pmatrix}
 0.4\\
 0.1\\
 0.3\\
@@ -150,8 +147,7 @@ $$
 0 & 2.1 & 2.0 & 1.9 & 1.8
 \end{pmatrix}_{t}
 ; \boldsymbol \theta
-\end{pmatrix}
-$$
+\end{pmatrix}$
 
 In case a sequence of frames is used as the input, the mapping can be illustrated as follows:
 
@@ -195,7 +191,6 @@ Instead of updating the agent's policy at every time step, a common approach is 
 ## TODO
 
 - Add FIFO buffer for policy gradients (momentum memory buffer).
-- Add time stamp to console print.
 - Implement adaptive epsilon decay rate for deep q-learning.
 - Add Boltzmann exploration and epsilon-greedy sampling.
 
