@@ -23,8 +23,8 @@ Run a training session using a specified learning algorithm:
 
 ```console
 cd Snake 
-python train.py --algorithm policy_gradient
-python train.py --algorithm deep_q_learning
+python train.py --algorithm policy_gradient --model-name 1
+python train.py --algorithm deep_q_learning --model-name 2
 ```
 
 Track training progress with Tensorboard:
