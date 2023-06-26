@@ -196,7 +196,6 @@ class Snake(Environment):
                 self.frames.append(copy.deepcopy(new_state))
                 state = torch.stack(list(self.frames), dim=0)
                 events["new_states"].append(copy.deepcopy(state))
-                print(f"{state = }")
 
         return events
 
@@ -360,14 +359,17 @@ class Snake(Environment):
         """Runs game with model."""
 
         sleep_seconds = 0.05
+        done = False
+        step = 0
 
         self._init_render()
         state = self._reset()
-        self._render()
+        self._render(step=step)
 
-        done = False
 
         while not done:
+
+            step += 1
             time.sleep(sleep_seconds) 
 
             action = model.predict(state)
@@ -384,7 +386,7 @@ class Snake(Environment):
             if done and reward == -1:
                 print("Game over.")
 
-            self._render()
+            self._render(step=step)
 
     def _init_render(self) -> None:
         self.fig, axis = plt.subplots()
@@ -394,18 +396,22 @@ class Snake(Environment):
         self.img = axis.imshow(
             field,
             vmin=-1.0,
-            vmax=2.0,
+            vmax=1.0,
             cmap="bwr",
             interpolation="none",
             aspect="equal",
             extent=extent,
         )
-        axis.grid(color="k", linewidth=1)
+        axis.set_xticks([])
+        axis.set_yticks([])
         self.fig.canvas.draw()
         plt.show(block=False)
 
-    def _render(self) -> None:
+    def _render(self, step: int = 0) -> None:
         """Renders playing field.
+
+        Args:
+            step: Current step taken by agent.
 
         Consider this answer for faster rendering:
         https://stackoverflow.com/questions/40126176/fast-live-plotting-in-matplotlib-pyplot
@@ -415,6 +421,7 @@ class Snake(Environment):
         self.img.set_data(field)
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
+        plt.savefig(f"out/{step}", bbox_inches="tight")
 
     def _reset(self) -> torch.Tensor:
         """Resets the environment.

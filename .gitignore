@@ -166,3 +166,4 @@ tags
 # Misc #
 ########
 *.dat
+/out

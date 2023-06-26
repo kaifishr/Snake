@@ -27,7 +27,7 @@ def save_checkpoint(model: torch.nn.Module, args) -> None:
         args: Parsed arguments.
     """
     model_name = args.model_name
-    checkpoint_name = f"{f'{model_name}_{args.algorithm}' if model_name else 'model'}"
+    checkpoint_name = f"{f'{model_name}' if model_name else 'model'}"
     checkpoint_path = "weights"
     dir_path = pathlib.Path(checkpoint_path)
     pathlib.Path(dir_path).mkdir(parents=True, exist_ok=True)
@@ -44,7 +44,7 @@ def load_checkpoint(model: torch.nn.Module, args) -> None:
         args: Parsed arguments.
     """
     checkpoint_name = (
-        f"{f'{args.model_name}_{args.algorithm}' if args.model_name else 'model'}"
+        f"{f'{args.model_name}' if args.model_name else 'model'}"
     )
     checkpoint_path = "weights"
     model_path = pathlib.Path(checkpoint_path) / f"{checkpoint_name}.pth"

@@ -26,7 +26,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--algorithm",
         dest="algorithm",
         help="Reinforcement learning algorithm.",
-        default="policy_gradient",
+        default="deep_q_learning",
         choices=["policy_gradient", "deep_q_learning"],
         type=str,
     )
@@ -86,7 +86,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--learning-rate", 
         dest="learning_rate", 
-        default=2e-4, 
+        default=3e-4, 
         type=float
     )
 
@@ -100,7 +100,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-episodes", 
         dest="num_episodes", 
-        default=2,
+        default=4,
         type=int,
         help="Number of episodes per optimization step.",
     )
@@ -109,7 +109,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--gamma",
         dest="gamma",
         help="Discount or forgetting factor. 0 <= gamma <= 1.",
-        default=0.9,
+        default=0.90,
         type=float,
     )
 
@@ -133,7 +133,7 @@ def argument_parser() -> argparse.ArgumentParser:
         "--decay-rate",
         dest="decay_rate",
         help="Decay rate for epsilon-greedy value.",
-        default=0.999995,
+        default=0.99995,
         type=float,
     )
 

@@ -2,6 +2,11 @@
 
 A minimal environment equipped with reinforcement learning algorithms to train an agent to play [Snake](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). Both the learning algorithms as well as the game engine are implemented from scratch with a focus on simplicity, making it potentially useful for educational purposes and serving as a starting point to solve more complex scenarios, test reinforcement learning algorithms, and other extensions.
 
+<p align="center">
+  <img src="docs/video/out.gif", width="196"/>
+</p>
+
+
 ## Installation
 
 To run *Snake*, install the latest master directly from GitHub. For a basic 
@@ -190,7 +195,7 @@ Instead of updating the agent's policy at every time step, a common approach is 
 
 ## TODO
 
-- Add FIFO buffer for policy gradients.
+- Add FIFO buffer for policy gradients (momentum memory buffer).
 - Add time stamp to console print.
 - Implement adaptive epsilon decay rate for deep q-learning.
 - Add Boltzmann exploration and epsilon-greedy sampling.
