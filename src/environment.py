@@ -121,6 +121,7 @@ class Snake(Environment):
         self.step_counter = 0
 
         # Initialize past frames with tensor filled with scalar value 0.
+        self.frames = None
         self.frames = self._init_frames()  # TODO: Required?
 
     def _init_frames(self) -> None:
@@ -321,7 +322,7 @@ class Snake(Environment):
         self._init_render()
 
         done = False
-        state = self._reset()
+        # state = self._reset()
         print(self)
 
         self._render()
@@ -370,9 +371,12 @@ class Snake(Environment):
             action = model.predict(state)
             state, reward, done = self.step(action=action)
 
+            self.frames.append(state)
+            state = torch.stack(list(self.frames), dim=0)
+
             if self.debug:
                 print(f"{action = }")
-                # print(f"{state = }")
+                print(f"{state = }")
                 print(f"{reward = }")
                 print(f"{done = }\n")
 

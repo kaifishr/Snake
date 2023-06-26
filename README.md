@@ -41,16 +41,9 @@ python play.py --mode agent --model-name 1
 
 ### Reinforcement Learning
 
-The interaction of an agent with an uncertain environment and the selection of
-the right actions to maximize a reward are difficult and sometimes unfeasible 
-to learn by formulating them as an regression or classification task. This is
-where reinforcement learning comes into play to continually train an agent to
-learn how to correctly interact with a dynamic world.
+The interaction of an agent with an uncertain environment and the selection of the right actions to maximize a reward are difficult and sometimes unfeasible to learn by formulating them as an regression or classification task. This is where reinforcement learning comes into play to continually train an agent to learn how to correctly interact with a dynamic world.
 
-This repository comes with two basic reinforcement learning algorithms, namely 
-[policy gradients](#policy-gradients) and [deep Q-learning](#deep-q-learning), 
-that are used to train an agent to play Snake. The agent consists of a policy
-network and the reinforcement learning algorithm used to train the network.
+This repository comes with two basic reinforcement learning algorithms, namely [policy gradients](#policy-gradients) and [deep Q-learning](#deep-q-learning), that are used to train an agent to play Snake. The agent consists of a policy network and the reinforcement learning algorithm used to train the network.
 
 In the game of Snake, a dynamic world, also referred to as the environment, is represented by the playing field, food that is randomly positioned inside it, and the agent itself. The agent observes a **state** represented by the environment's current configuration. An example state  might look as follows
 
@@ -70,22 +63,13 @@ $$
 
 with $\circ$ and $\times$ representing the snake's body and food, respectively. 
 
-Based on the observed state, the agent performs an **action**. This action 
-causes the environment to transition to a new state. In the case of Snake, the
-available actions is the discrete set of possible movement directions ($\uparrow$, 
-$\downarrow$, $\leftarrow$, $\rightarrow$).
+Based on the observed state, the agent performs an **action**. This action causes the environment to transition to a new state. In the case of Snake, the available actions is the discrete set of possible movement directions ($\uparrow$, $\downarrow$, $\leftarrow$, $\rightarrow$).
 
-The agent's actions are based on a **policy**, a function that maps states 
-(the current observation of the environment) to a discrete probability 
-distribution of possible actions. This function can be modeled by a neural 
-network whose parameters $\boldsymbol \theta$ are learned.
+The agent's actions are based on a **policy**, a function that maps states (the current observation of the environment) to a discrete probability distribution of possible actions. This function can be modeled by a neural network whose parameters $\boldsymbol \theta$ are learned.
 
 $$\textbf{action}= \text{policy}(\textbf{state}; \boldsymbol \theta)$$
 
-As an aside, it should be noted, that for a given state, the agent's best 
-choice for an action depends only on the current state and may not depend on 
-past states. Considering only the information provided by the current state for 
-the next action is known as a [Markow decision process](https://en.wikipedia.org/wiki/Markov_decision_process). Aside end.
+As an aside, it should be noted, that for a given state, the agent's best choice for an action depends only on the current state and may not depend on past states. Considering only the information provided by the current state for the next action is known as a [Markow decision process](https://en.wikipedia.org/wiki/Markov_decision_process). Aside end.
 
 The action is then followed by a **reward** provided by the environment. The reward is a scalar value (higher values are better). During the training, the agent interacts with the environment and the selected optimization method adjusts the agent's policy in order to *maximize the expectation of future rewards*.
 

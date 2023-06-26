@@ -46,7 +46,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-frames", 
         dest="num_frames", 
-        default=4, 
+        default=2, 
         type=int,
         help="Number of past frames that are fed into the policy network.",
     )
