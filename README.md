@@ -177,8 +177,8 @@ $$
 0 & 1 & 1 & 1 & 1 \\
 0 & 1 & 0 & 0 & 1 \\
 0 & 1 & 1 & 1 & 1 \\
-\end{pmatrix}_{t-1}
-; \boldsymbol \theta
+\end{pmatrix}
+_{t-1}; \boldsymbol \theta
 \end{pmatrix}
 $$
 
