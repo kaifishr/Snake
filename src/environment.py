@@ -131,7 +131,7 @@ class Snake(Environment):
             frames.append(torch.zeros(size=(self.size, self.size)))
         return frames
 
-    def _init_agents(self) -> None:
+    def _init_agent(self) -> None:
         """Initializes position of agent."""
         # Create list of all playing field coordinates.
         # Used later to place food.
@@ -157,7 +157,7 @@ class Snake(Environment):
             self.field[y_food, x_food] = -1
             done = False
         else:
-            # Playing field completely populated by snake(s).
+            # Playing field completely populated by the snake.
             done = True
 
         return done
@@ -193,9 +193,10 @@ class Snake(Environment):
                 events["actions"].append(action)
                 events["rewards"].append(reward)
                 events["dones"].append(done)
-                self.frames.append(new_state)
+                self.frames.append(copy.deepcopy(new_state))
                 state = torch.stack(list(self.frames), dim=0)
                 events["new_states"].append(copy.deepcopy(state))
+                print(f"{state = }")
 
         return events
 
@@ -358,7 +359,8 @@ class Snake(Environment):
     def play_agent(self, model: torch.nn.Module) -> None:
         """Runs game with model."""
 
-        # self.max_steps_episode = 999999999
+        sleep_seconds = 0.05
+
         self._init_render()
         state = self._reset()
         self._render()
@@ -366,12 +368,11 @@ class Snake(Environment):
         done = False
 
         while not done:
-            time.sleep(0.05)  # TODO: Make this a parameter.
+            time.sleep(sleep_seconds) 
 
             action = model.predict(state)
-            state, reward, done = self.step(action=action)
-
-            self.frames.append(state)
+            new_state, reward, done = self.step(action=action)
+            self.frames.append(copy.deepcopy(new_state))
             state = torch.stack(list(self.frames), dim=0)
 
             if self.debug:
@@ -426,7 +427,7 @@ class Snake(Environment):
         # Reset snake.
         self.pos_q = collections.deque()
         # Initialize new agents.
-        self._init_agents()
+        self._init_agent()
 
         self.step_counter = 0
 

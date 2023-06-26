@@ -46,7 +46,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-frames", 
         dest="num_frames", 
-        default=2, 
+        default=4, 
         type=int,
         help="Number of past frames that are fed into the policy network.",
     )
@@ -75,7 +75,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--encode-length",
         dest="encode_length",
-        default=True,
+        default=False,
         type=bool,
         help="Uses color gradient to encode length of agent if true.",
     )
