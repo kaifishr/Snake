@@ -46,7 +46,7 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-frames", 
         dest="num_frames", 
-        default=3, 
+        default=4, 
         type=int,
         help="Number of past frames that are fed into the policy network.",
     )
@@ -72,12 +72,13 @@ def argument_parser() -> argparse.ArgumentParser:
         dest="forbid_growth",
     )
 
-    # parser.add_argument(
-    #     "--encode-length",
-    #     dest="encode_length",
-    #     default=True,
-    #     type=bool
-    # )
+    parser.add_argument(
+        "--encode-length",
+        dest="encode_length",
+        default=True,
+        type=bool,
+        help="Uses color gradient to encode length of agent if true.",
+    )
 
     ###########
     # Trainer #
@@ -99,9 +100,9 @@ def argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--num-episodes", 
         dest="num_episodes", 
-        default=8,
+        default=2,
         type=int,
-        help="Number of episodes per optimization step. (Deep Q-Learning)",
+        help="Number of episodes per optimization step.",
     )
 
     parser.add_argument(

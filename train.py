@@ -32,17 +32,3 @@ if __name__ == "__main__":
     model = Model(args)
     agent = Agent(model=model, args=args)
     train(env=env, agent=agent, args=args)
-
-    # if args.algorithm == "policy_gradient":
-    #     set_random_seed(seed=args.random_seed)
-    #     model = Model(args)
-    #     agent = PolicyGradient(model=model, args=args)
-    #     train(env=env, agent=agent, args=args)
-    # elif args.algorithm == "deep_q_learning":
-    #     set_random_seed(seed=args.random_seed)
-    #     model = Model(args)
-    #     agent = DeepQLearning(model=model, args=args)
-    #     train(env=env, agent=agent, args=args)
-    # else:
-    #     message = f"Reinforcement algorithm {args.algorithm} not implemented"
-    #     raise NotImplementedError(message)

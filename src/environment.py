@@ -104,6 +104,7 @@ class Snake(Environment):
         self.size = args.field_size
         self.num_episodes = args.num_episodes
         self.num_frames = args.num_frames
+        self.encode_length = args.encode_length
         self.field = torch.zeros(size=(self.size, self.size)) # TODO: Required?
 
         # Keep track of snake's position.
@@ -300,10 +301,12 @@ class Snake(Environment):
                 # Register snake's tail.
                 self.pos_q.popleft()
 
-            # Encodes snake's body in playing field.
-            encoding = torch.linspace(start=1.0, end=2.0, steps=len(self.pos_q))
+            # Encode snake in playing field.
+            # encoding = torch.linspace(start=1.0, end=2.0, steps=len(self.pos_q))
             for i, (x, y) in enumerate(self.pos_q):
-                self.field[y, x] = encoding[i]
+                self.field[y, x] = 1.0
+                if self.encode_length:
+                    self.field[y, x] += i / len(self.pos_q)
 
         state = self.field
 
