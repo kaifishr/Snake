@@ -142,11 +142,13 @@ $$
 \end{pmatrix}_{t}
 = \text{policy}
 \begin{pmatrix}
+\begin{pmatrix}
 -1 & 1 & 1 & 1 & 1 \\
 0 & 0 & 0 & 0 & 1 \\
 0 & 1 & 1 & 0 & 1 \\
 0 & 1 & 0 & 0 & 1 \\
 0 & 1 & 1 & 1 & 1 \\
+\end{pmatrix}
 \end{pmatrix}
 $$
 
